@@ -1,0 +1,134 @@
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+	font-family: 'Hiragino Kaku Gothic ProN', Meiryo, 'MS PGothic', Sans-serif;
+  margin-bottom : 150px;
+  padding-top   : 50px;
+}
+
+
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+  border: 0;
+}
+
+/*
+ * Sidebar1 (FileController)
+ */
+#file-controller {
+  position: fixed;
+  width   : 200px;
+  top: 51px;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  display: block;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  background-color: #f8f8f8;
+  border-right: 1px solid #ccc;
+}
+
+#file-controller a#filedroparea {
+	height  : 160px;
+	margin  : 0px 0px 6px 0px;
+	border  : 5px dashed silver;
+	padding : 60px 0px;
+	font-color       : gray;
+	background-color : transparent;
+}
+
+
+/*
+ * Sidebar2 (Schema)
+ */
+#schemata {
+  position: fixed;
+	margin-left:200px;
+  width   : 160px;
+  top: 51px;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  display: block;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  background-color: #eee;
+  border-right: 1px solid #ccc;
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+}
+.nav-sidebar > li > a.lv1 {
+	padding-left: 20px;
+}
+.nav-sidebar > li > a.lv2 {
+	padding     : 6px 20px 6px 36px;
+	overflow    : hidden;
+	text-overflow : ellipsis;
+	white-space : nowrap;
+	line-height : 1.1;
+	font-size   : 12px;
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+.nav-sidebar > .active > a > .badge {
+  color: #337ab7;
+  background-color: #fff;
+}
+
+/*
+ * Main Content
+ */
+div.main {
+	margin-left:360px;
+  padding-right: 40px;
+  padding-left: 40px;
+}
+
+/*
+ * Clickable cursor
+ */
+.clickable {
+  cursor: pointer;
+}
+a.updown {
+  cursor: pointer;
+}
+
+/*
+ * hidden when initialized
+ */
+.init-hidden {
+	display : none;
+}
+
+/*
+ * pagination
+ */
+ul.pagination {
+	margin-bottom : 3px;
+}
+p.totalcount {
+	font-size : 11px;
+}
+
