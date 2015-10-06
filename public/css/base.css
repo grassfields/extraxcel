@@ -24,8 +24,8 @@ body {
 #file-controller {
   position: fixed;
   width   : 200px;
-  top: 51px;
-  bottom: 0;
+  height  : 250px;
+  top: 50px;
   left: 0;
   z-index: 1000;
   display: block;
@@ -43,6 +43,21 @@ body {
 	padding : 60px 0px;
 	font-color       : gray;
 	background-color : transparent;
+}
+
+ul.filelist {
+  position: fixed;
+  width   : 200px;
+  top: 300px;
+  bottom: 0;
+  left: 0;
+  z-index: 800;
+  display: block;
+  padding: 10px 5px;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  background-color: #f8f8f8;
+  border-right: 1px solid #ccc;
 }
 
 ul.filelist li {
@@ -73,7 +88,7 @@ ul.filelist li p {
   position: fixed;
 	margin-left:200px;
   width   : 160px;
-  top: 51px;
+  top: 50px;
   bottom: 0;
   left: 0;
   z-index: 1000;

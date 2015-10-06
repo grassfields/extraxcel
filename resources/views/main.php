@@ -67,7 +67,10 @@ if (is_array($addScriptFiles)) {
             <div class='progress-bar' role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%;'></div>
             </div>
             <hr>
+        </div>
 <?php
+//////////////////////////////
+// ファイルリスト
 $str = ""; $no = 0;
 foreach($dataset->files as $file) {
     $no++;
@@ -82,7 +85,6 @@ echo "<ul class='filelist list-unstyled' data-cnt='".$no."'>\n";
 echo $str;
 echo "</ul>\n";
 ?>
-        </div>
         <div id='schemata'>
         </div>
         
