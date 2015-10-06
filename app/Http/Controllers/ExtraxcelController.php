@@ -23,11 +23,11 @@ class ExtraxcelController extends Controller
             'upfile' => 'required',
         ]);
         
-        $objFile = $request->file('upfile');
-        //$objDataSet = app('Dataset');
-        //$arrLoaded = $objDataSet->load($file);
+        $objFile = app('App\Reader\ExcelReader', [ $request->file('upfile') ]);
+        $objDataSet = app('Dataset');
+        $arrLoaded = $objDataSet->load($objFile);
         
-        $arrLoaded = array("TEST");
+        session(['Dataset' => $objDataSet]);
         return response()->json($arrLoaded);
         
     }
@@ -40,7 +40,7 @@ class ExtraxcelController extends Controller
     public function download()
     {
         $objDataSet     = app('Dataset');
-        $makeFilePath   = objDataSet->output();
+        $makeFilePath   = $objDataSet->output();
         $outputFileName = self::DOWNLOAD_FILENAME."_".date("YmdHi").".xlsx";
         return response()->download($filepath, $outputFileName);
     }

@@ -1,13 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Schema;
 
 use PHPExcel_NamedRange;
 use PHPExcel_Cell;
 use PHPExcel_Exception;
 use ExcelBook;
 
-class Schema {
+class Schema
+{
     
     /**
     *  定数定義

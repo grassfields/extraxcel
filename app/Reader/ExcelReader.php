@@ -2,10 +2,12 @@
 
 namespace App\Reader;
 
+use App\Schema;
 use ExcelBook;
 use ExcelSheet;
 use DateTime;
 use PHPExcel_Cell;
+use PHPExcel_IOFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ExcelReader {
@@ -32,11 +34,11 @@ class ExcelReader {
     public function __construct(UploadedFile $objFile) {
         $this->initialize();
         
-        if ($objFile->isValid == false) {
+        if ($objFile->isValid() == false) {
             throw new \Exception('File upload is failed.');
         }
-        if (    $objFile->getClientOriginalExtension() != EXT_EXCEL_BIFF
-             && $objFile->getClientOriginalExtension() != EXT_EXCEL_OOXML ) {
+        if (    $objFile->getClientOriginalExtension() != self::EXT_EXCEL_BIFF
+             && $objFile->getClientOriginalExtension() != self::EXT_EXCEL_OOXML ) {
             $msg = 'Upload file is not Excel format. [EXT='.$objFile->getClientOriginalExtension().']';
             throw new \Exception($msg);
         }
@@ -56,21 +58,94 @@ class ExcelReader {
     }
     
     /**
+    *  項目初期化
+    */
+    public function getFileInfo() {
+        
+        $arr = [ "name"   => $this->file->getClientOriginalName(),
+                 "size"   => $this->getSize(),
+                 "dt"     => $this->dt->format("H:i") ];
+        return $arr;
+    }
+    
+    /**
+     *  ファイルサイズを直感的な表記で返す
+     *
+     * @param integer
+     * @return boolean
+     */
+    public function getSize() {
+        
+        $size = $this->file->getSize();
+        
+        if ($size < 800) {
+            $str = $size."Byte";
+        } else if ($size < (1024 * 1024)) {
+            $str = round(($size / 1024), 1)."KB";
+        } else {
+            $str = round(($size / (1024*1024)), 1)."MB";
+        }
+        
+        return $str;
+    }
+    
+    /**
+    *  Excelファイルからスキーマを取得して返す
+    */
+    public function getSchemataFromExcel() {
+        
+        //Excelファイルを開く
+        $filepath = $this->file->getPathname();
+        $objPHPExcel = PHPExcel_IOFactory::load($filepath);
+        
+        //シート名を配列取得
+        $arrShtNm = $objPHPExcel->getSheetNames();
+        
+        //名前付きセル範囲の配列を取得
+        $arrNR = $objPHPExcel->getNamedRanges();
+        
+        //Excelファイルを閉じる
+        $objPHPExcel->disconnectWorksheets();
+        unset($objPHPExcel);
+        
+        
+        //スキーマオブジェクトを生成して返す
+        $arrSchema = array();
+        foreach($arrNR as $nr) {
+            
+            $name   = $nr->getName();
+            $objScp = $nr->getScope();
+            if (is_null($objScp)) {
+              $scope = ExcelBook::SCOPE_WORKBOOK;
+            } else {
+              $scope = array_search($objScp->getTitle(), $arrShtNm);
+            }
+            
+            $objSchema = app('App\Schema');
+            $objSchema->setNamedRange($nr, $scope );
+            
+            $arrSchema[$name] = $objSchema;
+        }
+        
+        return $arrSchema;
+    }
+    
+    /**
     *  文書のデータを配列に取得する
     */
-    public function readData($arrSchemata, $by = false) {
+    public function readData($arrSchema, $by = false) {
         
         $arrRtn = array();
         
         //Excelファイルを開く
-        $flg = ($this->ext != parent::EXT_EXCEL_BIFF);  //xlsxモード or xlsモード
+        $flg = ($this->ext != self::EXT_EXCEL_BIFF);  //xlsxモード or xlsモード
         $objBook = new ExcelBook(null, null, $flg);
         $objBook->setLocale('UTF-8');
         $objBook->loadFile($this->file->getPathname());
         
         //スキーマの名称でループし、
         //名前付きセルを順次取得する
-        foreach($arrSchemata as $name => $schema) {
+        foreach($arrSchema as $name => $schema) {
             
             //対象外は処理スキップ
             if ($schema->require==Schema::REQUIRE_IGNORE) continue;

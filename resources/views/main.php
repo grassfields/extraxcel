@@ -69,7 +69,7 @@ if (is_array($addScriptFiles)) {
             <hr>
 <?php
 $str = ""; $no = 0;
-foreach($data->files as $file) {
+foreach($dataset->files as $file) {
     $no++;
     $str.= "<li data-fileno='".$no."' >\n";
     $str.= "<span>".$no."</span>\n";

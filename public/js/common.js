@@ -49,7 +49,7 @@ function uploadStart($parent, fl) {
 	$finfo.addClass('uploading');
 	fl.bar = $bar;
 	fl.li  = $finfo;
-	$parent.prepend($finfo);
+	$parent.append($finfo);
 }
 
 

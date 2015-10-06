@@ -2,7 +2,8 @@
 
 namespace App;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Reader\ExcelReader;
+
 
 class Dataset
 {
@@ -52,15 +53,15 @@ class Dataset
     /**
     *  Excelファイルのデータを読む
     */
-    public function load(UploadedFile $file) {
+    public function load(ExcelReader $file) {
         
-        $this->files[] = $file;
+        $this->files[]  = $file->getFileInfo();
+        if ($this->schemata->locked == false) {
+             $this->schemata->add($file->getSchemataFromExcel());
+        }
         
-        $this->file
-        
-        
-        
-        
+        $arrRtn = [ $file->getFileInfo() ];
+        return $arrRtn;
     }
     
     

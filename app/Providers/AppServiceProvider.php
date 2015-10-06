@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Dataset;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -44,6 +45,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        /*
+        |--------------------------------------------------------------------------
+        | サービスコンテナ
+        |--------------------------------------------------------------------------
+        |
+        */
+        $this->app->singleton('Dataset', function($app) {
+            if (session()->has('Dataset')) {
+                return session('Dataset');
+            } else {
+                return new Dataset();
+            }
+        });
     }
 }

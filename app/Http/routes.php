@@ -18,9 +18,8 @@ Route::get( 'download', 'ExtraxcelController@download');
 Route::get('/', function () {
     
     //$data = app('ExtraxcelData');
-    $data = new stdClass;
-    $data->files = array();
-    $view = view('main')->with('data', $data);
+    $dataset = app('Dataset');
+    $view = view('main')->with('dataset', $dataset);
     return $view;
     
     //return view('welcome');
