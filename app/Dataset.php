@@ -2,12 +2,14 @@
 
 namespace App;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 class Dataset
 {
     
-    /*************************************
-    * 定数定義
-    **************************************/
+    /**
+    *  定数定義
+    */
     const SHEETNAME_CELL   = "単一セル";
     const SHEETNAME_ERR    = "ErrorList";
     const DOCINFO_COLNUM   = 11;    //文書情報の項目数
@@ -47,7 +49,19 @@ class Dataset
         $this->_format   = array();
     }
     
-    
+    /**
+    *  Excelファイルのデータを読む
+    */
+    public function load(UploadedFile $file) {
+        
+        $this->files[] = $file;
+        
+        $this->file
+        
+        
+        
+        
+    }
     
     
     

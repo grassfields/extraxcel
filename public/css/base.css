@@ -45,6 +45,26 @@ body {
 	background-color : transparent;
 }
 
+ul.filelist li {
+	height  : 40px;
+	margin-bottom  : 6px;
+	border-bottom  : 1px solid silver;
+	padding-bottom : 4px;
+	font-size  : 11px;
+}
+
+ul.filelist div.progress {
+	margin-bottom : 0px;
+}
+
+ul.filelist li p {
+	width: 100%;
+	margin-bottom : 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 
 /*
  * Sidebar2 (Schema)
