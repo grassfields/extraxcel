@@ -58,7 +58,7 @@ class ExcelWriter {
         //ExcelBook生成
         $this->createBook();
         
-        //データの読み込み＆書き込み
+        //データの書き込み
         $this->writeData();
         
         //エラーリストの追加
@@ -79,7 +79,7 @@ class ExcelWriter {
     
     
     /**
-    *  データの読み込み＆書き込み
+    *  データの書き込み
     */
     public function writeData() {
         
