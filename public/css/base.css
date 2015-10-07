@@ -132,10 +132,11 @@ table.preview thead { background-color:#C0EEC0; }
 table.preview tbody:nth-child(even) { background-color:#F2F8F2; }
 table.preview tbody:nth-child(odd)  { background-color:#FFFFFF; }
 table.preview td, table.preview th {
-	font-size  : 11px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	font-size     : 11px;
+	white-space   : nowrap;
+	overflow      : hidden;
+	text-overflow : ellipsis;
+	max-width     : 300px;
 }
 /*
  * Clickable cursor
