@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Reader\ExcelReader;
+use App\Schema\Schemata;
 
 
 class Dataset
@@ -21,9 +22,10 @@ class Dataset
     public  $files;
     public  $schemata;
     
-    private $_dataset;
-    private $_errlist;
+    private $_dataset_single;
+    private $_dataset_multi;
     
+    private $_errlist;
     private $_posRow;   //シート別行番号
     private $_idxCol;   //列番号
     private $_format;   //セルフォーマット
@@ -41,9 +43,10 @@ class Dataset
     public function initialize() {
         
         $this->files     = array();
-        $this->schemata  = null;
+        $this->schemata  = app('App\Schema\Schemata');
         
-        $this->_dataset  = array();
+        $this->_dataset_single  = array();
+        $this->_dataset_multi   = array();
         $this->_errlist  = array();
         $this->_posRow   = array();
         $this->_idxCol   = array();
@@ -55,23 +58,47 @@ class Dataset
     */
     public function load(ExcelReader $file) {
         
-        $this->files[]  = $file->getFileInfo();
-        if ($this->schemata->locked == false) {
-             $this->schemata->add($file->getSchemataFromExcel());
-        }
+        //ファイル情報を読み込み
+        $fileidx = count($this->files);
+        $this->files[$fileidx] = $file->getFileInfo();
         
-        $arrRtn = [ $file->getFileInfo() ];
+        //スキーマ情報を読み込み
+        $schemata = $file->getSchemataFromExcel();
+        $this->schemata->merge($schemata);
+        
+        //データの読み込み
+        $dataset_single = $file->readData_single($this->schemata);
+        $dataset_multi  = $file->readData_multi($this->schemata);
+        $this->_dataset_single[$fileidx] = $dataset_single;
+        $this->_dataset_multi[$fileidx]  = $dataset_multi;
+        
+        $arrRtn = [ 'file'          => $file->getFileInfo(),
+                    'schema'        => $schemata,
+                    'data_single'   => $dataset_single,
+                    'data_multi'    => $dataset_multi,
+                  ];
         return $arrRtn;
     }
     
+    /**
+    *  Excelファイルのデータを取得
+    */
+    public function getDataset($type = Schemata::CELL_SINGLE) {
+        return ($type == Schemata::CELL_SINGLE) ? $this->_dataset_single : $this->_dataset_multi;
+    }
     
     
-    
-    
-    
-    
-    
-    
+    /**
+    *  Excelファイルのデータを抹消
+    */
+    public function removeFile($idx) {
+        
+        if (!isset($this->files[$idx])) return false;
+        
+        unset($this->files[$idx]);
+        unset($this->_dataset_single[$idx]);
+        return true;
+    }
     
     
     

@@ -12,15 +12,10 @@
 */
 
 
-Route::post('file',     'ExtraxcelController@postFile');
+Route::post('file',         'ExtraxcelController@postFile');
+Route::delete('file/remove','ExtraxcelController@removeFile');
 Route::get( 'download', 'ExtraxcelController@download');
+Route::get( 'clear',    'ExtraxcelController@clear');
+Route::get( '/',        'ExtraxcelController@main');
 
-Route::get('/', function () {
-    
-    //$data = app('ExtraxcelData');
-    $dataset = app('Dataset');
-    $view = view('main')->with('dataset', $dataset);
-    return $view;
-    
-    //return view('welcome');
-});
+

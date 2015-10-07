@@ -50,34 +50,34 @@ if (is_array($addScriptFiles)) {
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
+        <li><a href='clear'>クリア</a></li>
       </ul>
     </div>
   </div>
 </div>
 
 <div class="container-fluid">
-    <?php echo csrf_field(); ?>
+    <?php echo csrf_field()."\n"; ?>
     <div class="row">
         <div id='file-controller'>
             <a id='filedroparea' class='btn btn-default btn-lg btn-block'>
                 <input id='fileupload' class='hidden' type='file' name='upfile' data-url='file' multiple>
                 Drop here !!
             </a>
-            <div id='uploadprogress' class='progress' style='display:none;'>
-            <div class='progress-bar' role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100' style='width: 0%;'></div>
-            </div>
             <hr>
         </div>
 <?php
 //////////////////////////////
 // ファイルリスト
-$str = ""; $no = 0;
-foreach($dataset->files as $file) {
-    $no++;
-    $str.= "<li data-fileno='".$no."' >\n";
-    $str.= "<span>".$no."</span>\n";
-    $str.= "<p>".$file['name']."</p>\n";
-    $str.= "<date>".$file['dt']."</date>\n";
+$no  = 0;
+$str = "";
+foreach($objDataset->files as $fileidx => $file) {
+    $no = $fileidx + 1;
+    $str.= "<li data-fileidx='".e($fileidx)."' >\n";
+    $str.= "<span>".e($no)."</span>\n";
+    $str.= "<date>".e($file['dt'])."</date>\n";
+    $str.= "<button type='button' class='btn btn-xs close'>&times;</button>\n";
+    $str.= "<p>".e($file['name'])."</p>\n";
     $str.= "</li>\n";
 }
 //HTML出力
@@ -85,24 +85,109 @@ echo "<ul class='filelist list-unstyled' data-cnt='".$no."'>\n";
 echo $str;
 echo "</ul>\n";
 ?>
+
         <div id='schemata'>
+<?php
+//////////////////////////////
+// スキーマリスト（単一セル）
+$no  = 0;
+$str = "<h4>単一セル</h4>";
+$str.= "<ul class='schemalist list-unstyled' id='schemalist_single'>";
+$names_single = $objDataset->schemata->getSchemaNames('single');
+foreach($names_single as $name) {
+    $no++;
+    $schema = $objDataset->schemata->getSchema($name, 'single');
+    $str.= "<li data-no='".$no."' >\n";
+    $str.= "<p>".e($name)."</p>\n";
+    $str.= "<p>".e($schema->xlrange)."</p>\n";
+    $str.= "</li>\n";
+}
+$str.= "</ul>\n";
+echo $str;
+//////////////////////////////
+// スキーマリスト（複数セル）
+$no  = 0;
+$str = "<h4>複数セル</h4>";
+$str.= "<ul class='schemalist list-unstyled' id='schemalist_multi'>";
+$names_multi = $objDataset->schemata->getSchemaNames('multi');
+foreach($names_multi as $name) {
+    $no++;
+    $schema = $objDataset->schemata->getSchema($name, 'multi');
+    $str.= "<li data-no='".$no."' >\n";
+    $str.= "<p>".e($name)."</p>\n";
+    $str.= "<p>".e($schema->xlrange)."</p>\n";
+    $str.= "</li>\n";
+}
+$str.= "</ul>\n";
+echo $str;
+?>
         </div>
         
         
 <?php
-//メインコンテンツ開始
+//////////////////////////////
+//プレビュー画面ヘッダ
 $str = "";
 $str.= "<div class='main'>\n";
 $str.= "<div class='page-header'>\n";
-$str.= "  <h1>Hello world !!</h1>\n";
+$str.= "  <h1>Preview</h1>\n";
 $str.= "</div>\n";
 $str.= "<div class='row'>\n";
-$str.= "<div class='col-md-6'>\n";
+$str.= "  <div class='col-md-4'>\n";
+$str.= "    <select class='form-control' id='sheetidx'>\n";
+$sel = ($sheettype == 's') ? ' selected' : '';
+$str.= "    <option value='single' data-idx='0'".$sel.">セルデータ一覧</option>\n";
+foreach($names_multi as $idx => $name) {
+    $sel = ($sheettype == 'm' && $sheetidx == $idx) ? ' selected' : '';
+    $str.= "    <option value='multi' data-idx='".e($idx)."'".$sel.">".e($name)."</option>\n";
+}
+$str.= "    </select>\n";
+$str.= "  </div>\n";
+$str.= "  <div class='col-md-3 col-md-offset-5'>\n";
+$str.= "    <button class='btn btn-default btn-lg btn-block'>ダウンロード</button>\n";
+$str.= "  </div>\n";
 $str.= "</div>\n";
-$str.= "</div>\n";
+
+
+//////////////////////////////
+//プレビューテーブルヘッダ
+if ($sheettype == 's') {
+    $header     = $names_single;
+    $view_name  = 'preview_single';
+    $dataset    = $objDataset->getDataset('single');
+} else {
+    $header     = [ $names_multi[$sheetidx] ];
+    $view_name  = 'preview_multi';
+    $dataset    = $objDataset->getDataset('multi');
+}
+$str.= "<div class='table-responsive'>\n";
+$str.= "<table class='table preview'>\n";
+$str.= "<thead>\n";
+$str.= "<tr>\n";
+$str.= "<th>No</th>\n";
+foreach($header as $name) {
+    $str.= "<th>".e($name)."</th>\n";
+}
+$str.= "</tr>\n";
+$str.= "</thead>\n";
+
+//////////////////////////////
+//プレビューテーブルヘッダ
+foreach($dataset as $idx => $data) {
+    $view = view($view_name)->with('fileidx', $idx)
+                            ->with('header',  $header)
+                            ->with('data',    $data);
+    $str.= $view->render();
+}
+
+$str.= "</table>\n";
+$str.= "</div>\n";  //class='table-responsive'
 
 //HTML出力
 echo $str;
+
+//var_dump($objDataset->schemata->getSchemaNames('multi'));
+var_dump($objDataset->getDataset('single'));
 ?>
         </div>
     </div><!--class="row"-->
@@ -114,3 +199,4 @@ echo $str;
 <script type='text/javascript' src='js/common.js'></script>
 </body>
 </html>
+

@@ -2,7 +2,8 @@
 
 namespace App\Reader;
 
-use App\Schema;
+use App\Schema\Schema;
+use App\Schema\Schemata;
 use ExcelBook;
 use ExcelSheet;
 use DateTime;
@@ -15,8 +16,6 @@ class ExcelReader {
     /**
     *  定数定義
     */
-    const GET_BY_NAME    = 1;
-    const GET_BY_RANGE   = 2;
     const EXT_EXCEL_BIFF      = "xls";
     const EXT_EXCEL_OOXML     = "xlsx";
     //const EXT_WORD_OOXML      = "docx";
@@ -110,7 +109,7 @@ class ExcelReader {
         
         
         //スキーマオブジェクトを生成して返す
-        $arrSchema = array();
+        $objSchemata = app('App\Schema\Schemata');
         foreach($arrNR as $nr) {
             
             $name   = $nr->getName();
@@ -121,19 +120,16 @@ class ExcelReader {
               $scope = array_search($objScp->getTitle(), $arrShtNm);
             }
             
-            $objSchema = app('App\Schema');
-            $objSchema->setNamedRange($nr, $scope );
-            
-            $arrSchema[$name] = $objSchema;
+            $objSchemata->addSchema($nr, $scope);
         }
         
-        return $arrSchema;
+        return $objSchemata;
     }
     
     /**
     *  文書のデータを配列に取得する
     */
-    public function readData($arrSchema, $by = false) {
+    public function readData_single(Schemata $schemata) {
         
         $arrRtn = array();
         
@@ -145,13 +141,18 @@ class ExcelReader {
         
         //スキーマの名称でループし、
         //名前付きセルを順次取得する
-        foreach($arrSchema as $name => $schema) {
+        $schemanames = $schemata->getSchemaNames(Schemata::CELL_SINGLE);
+        foreach($schemanames as $name) {
+            
+            $schema = $schemata->getSchema($name, Schemata::CELL_SINGLE);
             
             //対象外は処理スキップ
             if ($schema->require==Schema::REQUIRE_IGNORE) continue;
             
             $objSheet = $objBook->getSheetByName($schema->xlsheet);
-            if ($by == self::GET_BY_RANGE) {
+            if (!$objSheet) continue;   //シート取得不可ならスキップ
+            
+            if ($schemata->read_by == 'range') {
                 $arrAddr = $objSheet->addrToRowCol($schema->xlrange);
                 $arrDim  = PHPExcel_Cell::rangeDimension($schema->xlrange);
                 $arrInfo = array( "row_first" => $arrAddr["row"],
@@ -173,6 +174,133 @@ class ExcelReader {
             $arr = array(); $cnt = 0;
             switch($schema->type) {
                 case Schema::TYPE_CELL:
+                case Schema::TYPE_PID:
+                case Schema::TYPE_ACT:
+                    // 単一セル /////////////////////
+                    $data = $this->getOneCell($objSheet, $cnt, $arrInfo["row_first"], $arrInfo["col_first"] );
+                    $arr = [ "type"  => Schema::TYPE_CELL,
+                             "data"  => $data,
+                             "rows"  => 1,
+                             "cols"  => 1                 ];
+                    break;
+                /*
+                case Schema::TYPE_ROW:
+                    // １行 /////////////////////////
+                    $data = $this->getOneRow($objSheet, $cnt, $arrInfo["row_first"], $arrInfo["col_first"],
+                                                                                     $arrInfo["col_last"]  );
+                    $arr = [ "type"  => Schema::TYPE_ROW,
+                             "data"  => $data,
+                             "rows"  => 1,
+                             "cols"  => $arrValid["cols"] ];
+                    break;
+                    
+                case Schema::TYPE_COLUMN:
+                    // １列 /////////////////////////
+                    $data = $this->getOneCol($objSheet, $cnt, $arrInfo["col_first"], $arrInfo["row_first"],
+                                                                                     $arrInfo["row_last"]  );
+                    $arr = [ "type"  => Schema::TYPE_COLUMN,
+                             "data"  => $data,
+                             "rows"  => $arrValid["rows"],
+                             "cols"  => 1                 ];
+                    break;
+                    
+                case Schema::TYPE_TABLE:
+                    // 表形式 /////////////////////////
+                    $data = array(); $idx=0;
+                    for($rowIdx=$arrInfo["row_first"]; $rowIdx<=$arrInfo["row_last"]; $rowIdx++){
+                        $data[$idx] = $this->getOneRow($objSheet, $cnt, $rowIdx, $arrInfo["col_first"],
+                                                                                 $arrInfo["col_last"]   );
+                        $idx++;
+                    }
+                    $arr = [ "type"  => Schema::TYPE_TABLE,
+                             "data"  => $data,
+                             "rows"  => $arrValid["rows"],
+                             "cols"  => $arrValid["cols"] ];
+                    break;
+                */
+                
+                case Schema::TYPE_NON://非対応
+                default:
+                    //何もしない
+            }
+            
+            // 入力要求チェック[全て] ////////////////////////////
+            if ($schema->require==Schema::REQUIRE_ALL) {
+                if (($arrValid["rows"] * $arrValid["cols"]) !== $cnt) {
+                    $msg = "［".$name."］に空欄があります";
+                    throw new \Exception($msg);
+                }
+            }
+            // 入力要求チェック[１つ以上] ////////////////////////////
+            if ($schema->require==Schema::REQUIRE_NOTALL) {
+                if ($cnt < 1) {
+                    $msg = "［".$name."］が空欄です";
+                    throw new \Exception($msg);
+                }
+            }
+            
+            //正常
+            $arrRtn[$name] = $arr;
+        }
+        
+        unset($objSheet);
+        unset($objBook);
+        
+        return $arrRtn;
+        
+    }
+    
+    /**
+    *  文書のデータを配列に取得する
+    */
+    public function readData_multi(Schemata $schemata) {
+        
+        $arrRtn = array();
+        
+        //Excelファイルを開く
+        $flg = ($this->ext != self::EXT_EXCEL_BIFF);  //xlsxモード or xlsモード
+        $objBook = new ExcelBook(null, null, $flg);
+        $objBook->setLocale('UTF-8');
+        $objBook->loadFile($this->file->getPathname());
+        
+        //スキーマの名称でループし、
+        //名前付きセルを順次取得する
+        $schemanames = $schemata->getSchemaNames(Schemata::CELL_MULTI);
+        foreach($schemanames as $name) {
+            
+            $schema = $schemata->getSchema($name, Schemata::CELL_MULTI);
+            
+            //対象外は処理スキップ
+            if ($schema->require==Schema::REQUIRE_IGNORE) continue;
+            
+            $objSheet = $objBook->getSheetByName($schema->xlsheet);
+            if (!$objSheet) continue;   //シート取得不可ならスキップ
+            
+            if ($schemata->read_by == 'range') {
+                $arrAddr = $objSheet->addrToRowCol($schema->xlrange);
+                $arrDim  = PHPExcel_Cell::rangeDimension($schema->xlrange);
+                $arrInfo = array( "row_first" => $arrAddr["row"],
+                                  "col_first" => $arrAddr["column"],
+                                  "row_last"  => $arrAddr["row"]    + $arrDim[1] -1,
+                                  "col_last"  => $arrAddr["column"] + $arrDim[0] -1 );
+            } else {
+                $arrInfo = $objSheet->getNamedRange($name, $schema->xlscope);
+            }
+            
+            $arrValid = $schema->validate($arrInfo);
+            if ($arrValid["valid"] == false) {
+                //エラーメッセージの取得
+                $msg = "[".$name."]".$arrValid["msg"];
+                throw new \Exception($msg);
+                continue;
+            }
+            
+            $arr = array(); $cnt = 0;
+            switch($schema->type) {
+                /*
+                case Schema::TYPE_CELL:
+                case Schema::TYPE_PID:
+                case Schema::TYPE_ACT:
                     // 単一セル /////////////////////
                     $data = $this->getOneCell($objSheet, $cnt, $arrInfo["row_first"], $arrInfo["col_first"] );
                     $arr = [ "type"  => Schema::TYPE_CELL,
@@ -181,6 +309,7 @@ class ExcelReader {
                              "cols"  => 1                 ];
                     break;
                     
+                */
                 case Schema::TYPE_ROW:
                     // １行 /////////////////////////
                     $data = $this->getOneRow($objSheet, $cnt, $arrInfo["row_first"], $arrInfo["col_first"],

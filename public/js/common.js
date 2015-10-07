@@ -27,10 +27,42 @@ $('#fileupload').fileupload({ dataType: 'json',
 		var val = parseInt(data.loaded / data.total * 100, 10);
 		data.files[0].bar.css('width',  val + '%')
 	})
-	.on('fileuploaddone', function (e, data) {
-		data.files[0].bar.parents(".progress").delay(2000).fadeOut(1000);
-		data.files[0].li.removeClass('uploading');
-	})
+	//.on('fileuploaddone', uploadComplete);
+	.on('fileuploadprocessdone', uploadComplete);
+
+/********************************************
+  ファイル抹消
+*********************************************/
+$('ul.filelist button.close').on("click", function(e){
+	var $li = $(e.target).parents("li");
+	var idx = $li.data('fileidx');
+	var msg = '「' + $li.find('p').text() + '」のデータを抹消します\n\nよろしいですか？';
+	
+	if (!confirm(msg)) return;
+	
+	var token = $('input[name="_token"]').val();
+	var param = { _method : "DELETE",
+                  _token  : token,
+  				  idx     : idx
+  				}
+	$.post( 'file/remove', param, function(data){
+		$("table.preview tbody#file-"+idx).remove();
+		$li.remove();
+	}, 'json');
+	
+});
+
+/********************************************
+  Previewシートセレクタ
+*********************************************/
+$('select#sheetidx').on("change", function(e){
+	var url = '.';
+	var $opt = $('select#sheetidx option:selected');
+	
+	url+= ($opt.attr('value') == 'single') ? '?st=s' : '?st=m';
+	url+= '&idx=' + $opt.data('idx');
+	location.href = url;
+});
 
 
 
@@ -44,6 +76,8 @@ function uploadStart($parent, fl) {
 	$parent.data('cnt', no);
 	
 	$finfo.append($("<span>").text(no))
+	      .append("<date>")
+	      .append("<span class='size'>")
 	      .append($("<p>").text(fl.name))
 	      .append($("<div class='progress' style='height:3px;'>").append($bar));
 	$finfo.addClass('uploading');
@@ -52,4 +86,26 @@ function uploadStart($parent, fl) {
 	$parent.append($finfo);
 }
 
+///////////////////////////////////////////
+//  アップロード完了処理
+function uploadComplete(e, data) {
+	var $li = data.files[0].li;
+	data.files[0].bar.parents(".progress").delay(800).fadeOut(1000);
+	$li.removeClass('uploading');
+	
+	location.reload();
+	
+	/*
+	//ファイルリスト
+	$li.find("date").text(data.result.file.dt);
+	$li.find("span.size").text(data.result.file.size);
+	//スキーマ
+	if (data.result.schemata_html) {
+		$("div#schemata").html(data.result.schemata_html);
+	}
+	if (data.result.dataset_html) {
+		$("table.preview").append(data.result.dataset_html);
+	}
+	*/
+}
 

@@ -33,6 +33,21 @@ class ExtraxcelController extends Controller
     }
     
     
+    /**
+     * Excelファイルの抹消
+     */
+    public function removeFile(Request $request)
+    {
+        
+        $this->validate($request, [
+            'idx' => 'required|integer',
+        ]);
+        $objDataSet = app('Dataset');
+        $rtn = $objDataSet->removeFile($request->get('idx'));
+        return response()->json($rtn);
+    }
+    
+    
     
     /**
      * データをExcelファイルでダウンロード
@@ -43,6 +58,38 @@ class ExtraxcelController extends Controller
         $makeFilePath   = $objDataSet->output();
         $outputFileName = self::DOWNLOAD_FILENAME."_".date("YmdHi").".xlsx";
         return response()->download($filepath, $outputFileName);
+    }
+    
+    
+    /**
+     * データをExcelファイルでダウンロード
+     */
+    public function main(Request $request)
+    {
+        $this->validate($request, [
+            'st'  => 'in:s,m',
+            'idx' => 'integer',
+        ]);
+        
+        $dataset = app('Dataset');
+        $view = view('main')->with('objDataset', $dataset)
+                            ->with('sheettype',  $request->get('st', 's'))
+                            ->with('sheetidx',   $request->get('idx', 0));
+        return $view;
+    }
+    
+    
+    
+    /**
+     * データをクリアする
+     */
+    public function clear(Request $request)
+    {
+        
+        $dataset = app('Dataset');
+        $dataset->initialize();
+        $request->session()->regenerate();  //セッション再生成
+        return redirect('/');
     }
     
     

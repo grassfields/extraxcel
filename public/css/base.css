@@ -72,6 +72,10 @@ ul.filelist div.progress {
 	margin-bottom : 0px;
 }
 
+ul.filelist li date {
+	margin-left : 10px;
+}
+
 ul.filelist li p {
 	width: 100%;
 	margin-bottom : 2px;
@@ -93,42 +97,23 @@ ul.filelist li p {
   left: 0;
   z-index: 1000;
   display: block;
-  padding: 20px;
+  padding: 10px 5px;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
   background-color: #eee;
   border-right: 1px solid #ccc;
 }
 
-/* Sidebar navigation */
-.nav-sidebar {
-  margin-right: -21px; /* 20px padding + 1px border */
-  margin-bottom: 20px;
-  margin-left: -20px;
+ul.schemalist li {
+	margin-bottom  : 6px;
+	border-bottom  : 1px solid silver;
+	padding-bottom : 4px;
+	font-size  : 11px;
 }
-.nav-sidebar > li > a {
-  padding-right: 20px;
-}
-.nav-sidebar > li > a.lv1 {
-	padding-left: 20px;
-}
-.nav-sidebar > li > a.lv2 {
-	padding     : 6px 20px 6px 36px;
-	overflow    : hidden;
-	text-overflow : ellipsis;
-	white-space : nowrap;
-	line-height : 1.1;
-	font-size   : 12px;
-}
-.nav-sidebar > .active > a,
-.nav-sidebar > .active > a:hover,
-.nav-sidebar > .active > a:focus {
-  color: #fff;
-  background-color: #428bca;
-}
-.nav-sidebar > .active > a > .badge {
-  color: #337ab7;
-  background-color: #fff;
+
+ul.schemalist li p {
+	width: 100%;
+	margin-bottom : 2px;
 }
 
 /*
@@ -140,6 +125,18 @@ div.main {
   padding-left: 40px;
 }
 
+table.preview {
+	margin : 20px 0px 10px;
+}
+table.preview thead { background-color:#C0EEC0; }
+table.preview tbody:nth-child(even) { background-color:#F2F8F2; }
+table.preview tbody:nth-child(odd)  { background-color:#FFFFFF; }
+table.preview td, table.preview th {
+	font-size  : 11px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 /*
  * Clickable cursor
  */
