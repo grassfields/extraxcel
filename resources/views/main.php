@@ -148,40 +148,45 @@ $str.= "    <button class='btn btn-default btn-lg btn-block'>ダウンロード<
 $str.= "  </div>\n";
 $str.= "</div>\n";
 
-
-//////////////////////////////
-//プレビューテーブルヘッダ
-if ($sheettype == 's') {
-    $header     = $names_single;
-    $view_name  = 'preview_single';
-    $dataset    = $objDataset->getDataset('single');
+if (empty($objDataset->files)) {
+    //データ無し
+    $str.= view("welcome")->render();
+    
 } else {
-    $header     = [ $names_multi[$sheetidx] ];
-    $view_name  = 'preview_multi';
-    $dataset    = $objDataset->getDataset('multi');
-}
-$str.= "<div class='table-responsive'>\n";
-$str.= "<table class='table preview'>\n";
-$str.= "<thead>\n";
-$str.= "<tr>\n";
-$str.= "<th>No</th>\n";
-foreach($header as $name) {
-    $str.= "<th>".e($name)."</th>\n";
-}
-$str.= "</tr>\n";
-$str.= "</thead>\n";
+    //////////////////////////////
+    //プレビューテーブルヘッダ
+    if ($sheettype == 's') {
+        $header     = $names_single;
+        $view_name  = 'preview_single';
+        $dataset    = $objDataset->getDataset('single');
+    } else {
+        $header     = [ $names_multi[$sheetidx] ];
+        $view_name  = 'preview_multi';
+        $dataset    = $objDataset->getDataset('multi');
+    }
+    $str.= "<div class='table-responsive'>\n";
+    $str.= "<table class='table preview'>\n";
+    $str.= "<thead>\n";
+    $str.= "<tr>\n";
+    $str.= "<th>No</th>\n";
+    foreach($header as $name) {
+        $str.= "<th>".e($name)."</th>\n";
+    }
+    $str.= "</tr>\n";
+    $str.= "</thead>\n";
 
-//////////////////////////////
-//プレビューテーブルヘッダ
-foreach($dataset as $idx => $data) {
-    $view = view($view_name)->with('fileidx', $idx)
-                            ->with('header',  $header)
-                            ->with('data',    $data);
-    $str.= $view->render();
-}
+    //////////////////////////////
+    //プレビューテーブル描画
+    foreach($dataset as $idx => $data) {
+        $view = view($view_name)->with('fileidx', $idx)
+                                ->with('header',  $header)
+                                ->with('data',    $data);
+        $str.= $view->render();
+    }
 
-$str.= "</table>\n";
-$str.= "</div>\n";  //class='table-responsive'
+    $str.= "</table>\n";
+    $str.= "</div>\n";  //class='table-responsive'
+}
 
 //HTML出力
 echo $str;
