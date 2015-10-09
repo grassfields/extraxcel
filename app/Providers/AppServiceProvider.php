@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Dataset;
+use App\Writer\LibXLWriter;
+use App\Writer\PHPExcelWriter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,6 +33,16 @@ class AppServiceProvider extends ServiceProvider
                             => public_path('packages/components/bootstrap/css/bootstrap.min.css'),
                 __DIR__.'/../../vendor/components/bootstrap/js/bootstrap.min.js'
                             => public_path('packages/components/bootstrap/js/bootstrap.min.js'),
+                __DIR__.'/../../vendor/components/bootstrap/fonts/glyphicons-halflings-regular.eot'
+                            => public_path('packages/components/bootstrap/fonts/glyphicons-halflings-regular.eot'),
+                __DIR__.'/../../vendor/components/bootstrap/fonts/glyphicons-halflings-regular.svg'
+                            => public_path('packages/components/bootstrap/fonts/glyphicons-halflings-regular.svg'),
+                __DIR__.'/../../vendor/components/bootstrap/fonts/glyphicons-halflings-regular.ttf'
+                            => public_path('packages/components/bootstrap/fonts/glyphicons-halflings-regular.ttf'),
+                __DIR__.'/../../vendor/components/bootstrap/fonts/glyphicons-halflings-regular.woff'
+                            => public_path('packages/components/bootstrap/fonts/glyphicons-halflings-regular.woff'),
+                __DIR__.'/../../vendor/components/bootstrap/fonts/glyphicons-halflings-regular.woff2'
+                            => public_path('packages/components/bootstrap/fonts/glyphicons-halflings-regular.woff2'),
                 //blueimp
                 __DIR__.'/../../vendor/blueimp/jquery-file-upload/js/jquery.fileupload.js'
                             => public_path('packages/blueimp/jquery-file-upload/js/jquery.fileupload.js'),
@@ -51,12 +63,28 @@ class AppServiceProvider extends ServiceProvider
         |--------------------------------------------------------------------------
         |
         */
+        //////////////////////////////
+        // Dataset
         $this->app->singleton('Dataset', function($app) {
             if (session()->has('Dataset')) {
                 return session('Dataset');
             } else {
                 return new Dataset();
             }
+        });
+        //////////////////////////////
+        // Writer
+        $this->app->bind('Writer', function($app, $param) {
+            switch(strtolower(config('excel_lib'))){
+                case 'phpexcel': $obj=app('App\Writer\PHPExcelWriter', $param); break;
+                case 'libxl':    $obj=app('App\Writer\LibXLWriter',    $param); break;
+                case 'auto':
+                default:
+                    $obj= (extension_loaded('excel')) ? app('App\Writer\LibXLWriter',    $param)
+                                                      : app('App\Writer\PHPExcelWriter', $param);
+                    break;
+            }
+            return $obj;
         });
     }
 }

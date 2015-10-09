@@ -20,6 +20,8 @@ class ExtraxcelController extends Controller
     {
         
         $this->validate($request, [
+            'st'     => 'in:s,m',
+            'idx'    => 'integer',
             'upfile' => 'required',
         ]);
         
@@ -27,7 +29,9 @@ class ExtraxcelController extends Controller
         $objDataSet = app('Dataset');
         $arrLoaded = $objDataSet->load($objFile);
         
+        //セッションに保存
         session(['Dataset' => $objDataSet]);
+        
         return response()->json($arrLoaded);
         
     }
@@ -43,7 +47,13 @@ class ExtraxcelController extends Controller
             'idx' => 'required|integer',
         ]);
         $objDataSet = app('Dataset');
+        
+        //データ抹消
         $rtn = $objDataSet->removeFile($request->get('idx'));
+        
+        //セッションに保存
+        session(['Dataset' => $objDataSet]);
+        
         return response()->json($rtn);
     }
     
@@ -54,10 +64,42 @@ class ExtraxcelController extends Controller
      */
     public function download()
     {
-        $objDataSet     = app('Dataset');
-        $makeFilePath   = $objDataSet->output();
-        $outputFileName = self::DOWNLOAD_FILENAME."_".date("YmdHi").".xlsx";
-        return response()->download($filepath, $outputFileName);
+        $objDataSet = app('Dataset');
+        $objWriter  = app('Writer', [ $objDataSet ]);
+        $filepath   = $objWriter->save();
+        $responseFileName = self::DOWNLOAD_FILENAME."_".date("YmdHi").".xlsx";
+        return response()->download($filepath, $responseFileName);
+    }
+    
+    /**
+     * スキーマ情報のエクスポート
+     */
+    public function exportSchema()
+    {
+        $objDataSet = app('Dataset');
+        $filepath   = $objDataSet->schemata->save();
+        $responseFileName = self::DOWNLOAD_FILENAME."-schema_".date("YmdHi").".json";
+        return response()->download($filepath, $responseFileName);
+    }
+    /**
+     * スキーマ情報のエクスポート
+     */
+    public function importSchema(Request $request)
+    {
+        $this->validate($request, [
+            'upschema' => 'required',
+        ]);
+        
+        $objFile = $request->file('upschema');
+        $objDataSet = app('Dataset');
+        
+        $str = $objFile->getRealPath();
+        $strData = file_get_contents($objFile->getPathname());
+        $rtn = $objDataSet->schemata->load($strData);
+        
+        //セッションに保存
+        session(['Dataset' => $objDataSet]);
+        return response()->json($rtn);
     }
     
     
@@ -90,6 +132,15 @@ class ExtraxcelController extends Controller
         $dataset->initialize();
         $request->session()->regenerate();  //セッション再生成
         return redirect('/');
+    }
+    
+    /**
+     * データをダンプする
+     */
+    public function dump(Request $request)
+    {
+        $dataset = app('Dataset');
+        dd($dataset);
     }
     
     

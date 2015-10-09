@@ -12,10 +12,16 @@
 */
 
 
-Route::post('file',         'ExtraxcelController@postFile');
+Route::post(  'file',       'ExtraxcelController@postFile');
 Route::delete('file/remove','ExtraxcelController@removeFile');
+
+Route::get( 'schema/export','ExtraxcelController@exportSchema');
+Route::post('schema/import','ExtraxcelController@importSchema');
+
+
 Route::get( 'download', 'ExtraxcelController@download');
 Route::get( 'clear',    'ExtraxcelController@clear');
 Route::get( '/',        'ExtraxcelController@main');
 
+Route::get( 'dump',     'ExtraxcelController@dump');
 

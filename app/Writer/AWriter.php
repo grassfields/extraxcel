@@ -3,7 +3,7 @@
 namespace App\Writer;
 
 
-class ExcelWriter {
+abstract class AWriter {
 
     /**
     *  定数定義
@@ -53,7 +53,7 @@ class ExcelWriter {
     /**
     *  データシートExcelファイル生成
     */
-    public function createDataSheet() {
+    public function save() {
         
         //ExcelBook生成
         $this->createBook();
@@ -66,15 +66,12 @@ class ExcelWriter {
             $this->addErrList();
         }
         
-        //各シートのヘッダ表示
-        $this->writeHeader();
-        
         //Excelファイルをテンポラリに保存
         $this->filepath = tempnam(storage_path()."/cache", "datasheet_");
         $this->_book->save($this->filepath);
         
         //正常終了
-        return;
+        return $this->filepath;
     }
     
     

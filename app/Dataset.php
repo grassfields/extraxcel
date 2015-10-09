@@ -97,6 +97,7 @@ class Dataset
         
         unset($this->files[$idx]);
         unset($this->_dataset_single[$idx]);
+        unset($this->_dataset_multi[$idx]);
         return true;
     }
     

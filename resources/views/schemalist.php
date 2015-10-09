@@ -1,0 +1,52 @@
+<div id='schemata'>
+
+<div id='schema-controller'>
+    <div class="btn-group" role="group">
+        <button id='schemaimport' class='btn btn-default btn-xs'>
+            <span class='glyphicon glyphicon-open'></span>
+            <input id='schemaupload' class='hidden' type='file' name='upschema' data-url='schema/import'>
+        </button>
+        <a href='schema/export' class='btn btn-default btn-xs'>
+            <span class='glyphicon glyphicon-save'></span>
+        </a>
+    </div>
+</div>
+
+<?php
+//////////////////////////////
+// スキーマリスト（単一セル）
+$no  = 0;
+$str = "<h4>単一セル</h4>";
+$str.= "<ul class='schemalist list-unstyled' id='schemalist_single'>";
+$names_single = $schemata->getSchemaNames('single');
+foreach($names_single as $name) {
+    $no++;
+    $schema = $schemata->getSchema($name, 'single');
+    $str.= "<li data-no='".$no."' >\n";
+    $str.= "<p>".e($name)."</p>\n";
+    $str.= "<p>".e($schema->xlrange)."</p>\n";
+    $str.= "</li>\n";
+}
+$str.= "</ul>\n";
+echo $str;
+//////////////////////////////
+// スキーマリスト（複数セル）
+$no  = 0;
+$str = "<h4>複数セル</h4>";
+$str.= "<ul class='schemalist list-unstyled' id='schemalist_multi'>";
+$names_multi = $schemata->getSchemaNames('multi');
+foreach($names_multi as $name) {
+    $no++;
+    $schema = $schemata->getSchema($name, 'multi');
+    $str.= "<li data-no='".$no."' >\n";
+    $str.= "<p>".e($name)."</p>\n";
+    $str.= "<p>".e($schema->xlrange)."</p>\n";
+    $str.= "</li>\n";
+}
+$str.= "</ul>\n";
+
+//HTML出力
+echo $str;
+?>
+</div>
+

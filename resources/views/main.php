@@ -75,7 +75,7 @@ foreach($objDataset->files as $fileidx => $file) {
     $no = $fileidx + 1;
     $str.= "<li data-fileidx='".e($fileidx)."' >\n";
     $str.= "<span>".e($no)."</span>\n";
-    $str.= "<date>".e($file['dt'])."</date>\n";
+    $str.= "<date>".e($file['time'])."</date>\n";
     $str.= "<button type='button' class='btn btn-xs close'>&times;</button>\n";
     $str.= "<p>".e($file['name'])."</p>\n";
     $str.= "</li>\n";
@@ -84,49 +84,18 @@ foreach($objDataset->files as $fileidx => $file) {
 echo "<ul class='filelist list-unstyled' data-cnt='".$no."'>\n";
 echo $str;
 echo "</ul>\n";
-?>
 
-        <div id='schemata'>
-<?php
+
 //////////////////////////////
-// スキーマリスト（単一セル）
-$no  = 0;
-$str = "<h4>単一セル</h4>";
-$str.= "<ul class='schemalist list-unstyled' id='schemalist_single'>";
-$names_single = $objDataset->schemata->getSchemaNames('single');
-foreach($names_single as $name) {
-    $no++;
-    $schema = $objDataset->schemata->getSchema($name, 'single');
-    $str.= "<li data-no='".$no."' >\n";
-    $str.= "<p>".e($name)."</p>\n";
-    $str.= "<p>".e($schema->xlrange)."</p>\n";
-    $str.= "</li>\n";
-}
-$str.= "</ul>\n";
-echo $str;
-//////////////////////////////
-// スキーマリスト（複数セル）
-$no  = 0;
-$str = "<h4>複数セル</h4>";
-$str.= "<ul class='schemalist list-unstyled' id='schemalist_multi'>";
-$names_multi = $objDataset->schemata->getSchemaNames('multi');
-foreach($names_multi as $name) {
-    $no++;
-    $schema = $objDataset->schemata->getSchema($name, 'multi');
-    $str.= "<li data-no='".$no."' >\n";
-    $str.= "<p>".e($name)."</p>\n";
-    $str.= "<p>".e($schema->xlrange)."</p>\n";
-    $str.= "</li>\n";
-}
-$str.= "</ul>\n";
-echo $str;
-?>
-        </div>
-        
-        
-<?php
+// スキーマリスト
+$viewSchemata = view('schemalist')->with('schemata', $objDataset->schemata);
+echo $viewSchemata->render();
+
+
 //////////////////////////////
 //プレビュー画面ヘッダ
+$names_single = $objDataset->schemata->getSchemaNames('single');
+$names_multi  = $objDataset->schemata->getSchemaNames('multi');
 $str = "";
 $str.= "<div class='main'>\n";
 $str.= "<div class='page-header'>\n";
@@ -144,7 +113,10 @@ foreach($names_multi as $idx => $name) {
 $str.= "    </select>\n";
 $str.= "  </div>\n";
 $str.= "  <div class='col-md-3 col-md-offset-5'>\n";
-$str.= "    <button class='btn btn-default btn-lg btn-block'>ダウンロード</button>\n";
+$str.= "    <a href='download' class='btn btn-primary btn-lg btn-block'>";
+$str.= "        <span class='glyphicon glyphicon-download-alt'></span>";
+$str.= "        ダウンロード";
+$str.= "    </a>\n";
 $str.= "  </div>\n";
 $str.= "</div>\n";
 
@@ -192,7 +164,7 @@ if (empty($objDataset->files)) {
 echo $str;
 
 //var_dump($objDataset->schemata->getSchemaNames('multi'));
-var_dump($objDataset->getDataset('single'));
+//var_dump($objDataset->getDataset('single'));
 ?>
         </div>
     </div><!--class="row"-->

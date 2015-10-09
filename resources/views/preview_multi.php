@@ -2,7 +2,7 @@
 $no = $fileidx + 1;
 $name = $header[0];
 $str = "";
-$str.= "<tbody id='file-".$no."'>\n";
+$str.= "<tbody id='file-".$fileidx."'>\n";
 if (!isset($data[$name])) {
     //データ無し
     $str.= "<tr>\n";
@@ -10,7 +10,8 @@ if (!isset($data[$name])) {
     $str.= "<td></td>\n";
     $str.= "</tr>\n";
     
-} else if ($data[$name]['rows']==1) {
+} else if (    $data[$name]['rows']==1
+            || $data[$name]['cols']==1 ) {
     //１レコード出力
     $arrRow = $data[$name]['data'];
     $str.= "<tr>\n";

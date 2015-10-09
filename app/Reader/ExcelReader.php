@@ -63,7 +63,8 @@ class ExcelReader {
         
         $arr = [ "name"   => $this->file->getClientOriginalName(),
                  "size"   => $this->getSize(),
-                 "dt"     => $this->dt->format("H:i") ];
+                 "dt"     => $this->dt,
+                 "time"   => $this->dt->format("H:i") ];
         return $arr;
     }
     

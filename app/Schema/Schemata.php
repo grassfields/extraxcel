@@ -19,6 +19,7 @@ class Schemata
     */
     public  $locked;    //ロック（これ以上拡張しない）
     public  $read_by;   //データ読込キー（名前orセル範囲）
+    public  $filepath;  //設定ファイル保存パス
     
     private $_single;
     private $_single_odr;
@@ -39,6 +40,7 @@ class Schemata
         
         $this->locked   = false;
         $this->read_by  = 'name';
+        $this->filepath = null;
         
         $this->_single      = array();
         $this->_single_odr  = array();
@@ -147,7 +149,7 @@ class Schemata
      */
     public function getSchemaNames( $type = Schemata::CELL_SINGLE) {
         $arr = ($type == self::CELL_SINGLE) ? $this->_single_odr
-                                           : $this->_multi_odr;
+                                            : $this->_multi_odr;
         return $arr;
     }
     
@@ -164,4 +166,47 @@ class Schemata
         }
         return $obj;
     }
+    
+    /**
+     *  スキーマ情報をファイルに保存する
+     */
+    public function save() {
+        
+        $obj = new \stdClass();
+        $obj->locked        = $this->locked;
+        $obj->read_by       = $this->read_by;
+        $obj->single        = $this->_single;
+        $obj->single_odr    = $this->_single_odr;
+        $obj->multi         = $this->_multi;
+        $obj->multi_odr     = $this->_multi_odr;
+        
+        //ファイル保存
+        $filepath = tempnam(storage_path()."/cache", "datasheet_");
+        $contents = json_encode($obj, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        file_put_contents($filepath, $contents);
+        
+        //正常終了
+        $this->filepath = $filepath;
+        return $this->filepath;
+    }
+    
+    /**
+     *  スキーマ情報を読み込む
+     */
+    public function load($strSchema) {
+        
+        $obj = json_decode($strSchema);
+        if (!is_object($obj)) return false;
+        
+        $this->locked       = $obj->locked;
+        $this->read_by      = $obj->read_by;
+        $this->_single      = $obj->single;
+        $this->_single_odr  = $obj->single_odr;
+        $this->_multi       = $obj->multi;
+        $this->_multi_odr   = $obj->multi_odr;
+        
+        //正常終了
+        return true;
+    }
+    
 }

@@ -9,6 +9,7 @@
 /********************************************
   ファイルアップロード
 *********************************************/
+var uploading_filecount = 0;
 $('#filedroparea').on("click", function(e){
 	$(e.target).find("input:file").click();
 });
@@ -18,17 +19,25 @@ $('#fileupload').fileupload({ dataType: 'json',
                               formData: { _token : $('input[name="_token"]').val() }
                            })
 	.on('fileuploadadd', function (e, data) {
-							var $filelist = $("ul.filelist");
-							$.each(data.files, function(idx, fl){
-								uploadStart($filelist, fl);
-							});
+		var $filelist = $("ul.filelist");
+		$.each(data.files, function(idx, fl){
+			uploading_filecount++;
+			uploadStart($filelist, fl);
+		});
 	})
 	.on('fileuploadprogress', function (e, data) {
 		var val = parseInt(data.loaded / data.total * 100, 10);
 		data.files[0].bar.css('width',  val + '%')
 	})
-	//.on('fileuploaddone', uploadComplete);
-	.on('fileuploadprocessdone', uploadComplete);
+	.on('fileuploadalways', function(e, data) {
+		uploadComplete(e, data);
+		uploading_filecount--;
+		if (uploading_filecount < 1) {
+			setTimeout(function(){
+				location.reload(true);
+			},1000);
+		}
+	});
 
 /********************************************
   ファイル抹消
@@ -51,6 +60,21 @@ $('ul.filelist button.close').on("click", function(e){
 	}, 'json');
 	
 });
+
+/********************************************
+  スキーマアップロード
+*********************************************/
+$('#schemaimport').on("click", function(e){
+	$(e.target).find("input:file").click();
+});
+$('#schemaupload').fileupload({ dataType: 'json',
+	                            dropZone: $('#schemaupload'),
+                              	sequentialUploads : true,
+                              	formData: { _token : $('input[name="_token"]').val() }
+                           	  })
+	.on('fileuploadalways', function(e, data) {
+		location.reload(true);
+	});
 
 /********************************************
   Previewシートセレクタ
@@ -90,10 +114,8 @@ function uploadStart($parent, fl) {
 //  アップロード完了処理
 function uploadComplete(e, data) {
 	var $li = data.files[0].li;
-	data.files[0].bar.parents(".progress").delay(800).fadeOut(1000);
+	data.files[0].bar.parents(".progress").delay(500).fadeOut(500);
 	$li.removeClass('uploading');
-	
-	location.reload();
 	
 	/*
 	//ファイルリスト
