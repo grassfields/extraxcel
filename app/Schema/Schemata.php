@@ -200,10 +200,10 @@ class Schemata
         
         $this->locked       = $obj->locked;
         $this->read_by      = $obj->read_by;
-        $this->_single      = $obj->single;
-        $this->_single_odr  = $obj->single_odr;
-        $this->_multi       = $obj->multi;
-        $this->_multi_odr   = $obj->multi_odr;
+        $this->_single      = (array)$obj->single;
+        $this->_single_odr  = (array)$obj->single_odr;
+        $this->_multi       = (array)$obj->multi;
+        $this->_multi_odr   = (array)$obj->multi_odr;
         
         //正常終了
         return true;

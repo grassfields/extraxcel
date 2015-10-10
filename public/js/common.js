@@ -77,6 +77,18 @@ $('#schemaupload').fileupload({ dataType: 'json',
 	});
 
 /********************************************
+  スキーマ並べ替え
+*********************************************/
+$('button#sort-mode-toggle').on("click", function(e){
+	$("ul.schemalist").sortable('enable');
+});
+$("ul.schemalist").sortable({
+	disabled : true,
+	cursor:    'move',
+	opacity:   0.7
+});
+
+/********************************************
   Previewシートセレクタ
 *********************************************/
 $('select#sheetidx').on("change", function(e){

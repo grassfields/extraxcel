@@ -10,6 +10,13 @@
             <span class='glyphicon glyphicon-save'></span>
         </a>
     </div>
+    <button id='sort-mode-toggle' class='btn btn-default btn-xs'>
+        <span class='glyphicon glyphicon-sort'></span>
+    </button>
+    <div class="btn-group" role="group">
+        <button id='sort-ok' class='btn btn-default btn-xs'>OK</button>
+        <button id='sort-cancel' class='btn btn-default btn-xs'>Cancel</button>
+    </div>
 </div>
 
 <?php
