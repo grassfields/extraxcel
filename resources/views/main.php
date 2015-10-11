@@ -123,6 +123,7 @@ $str.= "</div>\n";
 if (empty($objDataset->files)) {
     //データ無し
     $str.= view("welcome")->render();
+    var_dump($objDataset->schemata);
     
 } else {
     //////////////////////////////

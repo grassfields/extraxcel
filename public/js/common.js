@@ -51,8 +51,8 @@ $('ul.filelist button.close').on("click", function(e){
 	
 	var token = $('input[name="_token"]').val();
 	var param = { _method : "DELETE",
-                  _token  : token,
-  				  idx     : idx
+                _token  : token,
+  				      idx     : idx
   				}
 	$.post( 'file/remove', param, function(data){
 		$("table.preview tbody#file-"+idx).remove();
@@ -68,7 +68,7 @@ $('#schemaimport').on("click", function(e){
 	$(e.target).find("input:file").click();
 });
 $('#schemaupload').fileupload({ dataType: 'json',
-	                            dropZone: $('#schemaupload'),
+	                              dropZone: $('#schemaupload'),
                               	sequentialUploads : true,
                               	formData: { _token : $('input[name="_token"]').val() }
                            	  })
@@ -86,6 +86,29 @@ $("ul.schemalist").sortable({
 	disabled : true,
 	cursor:    'move',
 	opacity:   0.7
+});
+$('button#sort-ok').on("click", function(e){
+	var sodr = [];
+	$('ul#schemalist_single p.name').each(function(idx,elm){
+		sodr.push(elm.innerText);
+	})
+	var modr = [];
+	$('ul#schemalist_multi p.name').each(function(idx,elm){
+		modr.push(elm.innerText);
+	})
+	
+	var token = $('input[name="_token"]').val();
+	var param = { _token     : token,
+  				      single_odr : sodr,
+  				      multi_odr  : modr
+  				    }
+	$.post( 'schema/sort', param, function(data){
+		location.reload(true);
+	}, 'json');
+	
+});
+$('button#sort-cancel').on("click", function(e){
+	location.reload();
 });
 
 /********************************************

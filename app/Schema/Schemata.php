@@ -101,7 +101,7 @@ class Schemata
      *  スキーマ出力順序を更新する（単一セル）
      */
     public function resetOrder_single(array $names) {
-        $this->_single_odr[] = array();
+        $this->_single_odr = array();
         foreach($names as $name) {
             if (!isset($this->_single[$name])) continue;
             $this->_single_odr[] = $name;
@@ -112,7 +112,7 @@ class Schemata
      *  スキーマ出力順序を更新する（複数セル）
      */
     public function resetOrder_multi(array $names) {
-        $this->_multi_odr[] = array();
+        $this->_multi_odr = array();
         foreach($names as $name) {
             if (!isset($this->_multi[$name])) continue;
             $this->_multi_odr[] = $name;
@@ -200,10 +200,13 @@ class Schemata
         
         $this->locked       = $obj->locked;
         $this->read_by      = $obj->read_by;
-        $this->_single      = (array)$obj->single;
-        $this->_single_odr  = (array)$obj->single_odr;
-        $this->_multi       = (array)$obj->multi;
-        $this->_multi_odr   = (array)$obj->multi_odr;
+        
+        foreach((array)$obj->single as $obj) {
+            $this->addSchema($obj);
+        }
+        foreach((array)$obj->multi as $obj) {
+            $this->addSchema($obj);
+        }
         
         //正常終了
         return true;

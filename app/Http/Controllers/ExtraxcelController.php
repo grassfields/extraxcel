@@ -81,6 +81,32 @@ class ExtraxcelController extends Controller
         $responseFileName = self::DOWNLOAD_FILENAME."-schema_".date("YmdHi").".json";
         return response()->download($filepath, $responseFileName);
     }
+    
+    
+    /**
+     * スキーマ情報の並び順を更新
+     */
+    public function sortSchema(Request $request)
+    {
+        $this->validate($request, [
+            'single_odr' => 'array',
+            'multi_odr' =>  'array',
+        ]);
+        
+        $objDataSet = app('Dataset');
+        if ($request->has('single_odr')) {
+            $objDataSet->schemata->resetOrder_single($request->get('single_odr'));
+        }
+        if ($request->has('multi_odr')) {
+            $objDataSet->schemata->resetOrder_multi($request->get('multi_odr'));
+        }
+        
+        //セッションに保存
+        session(['Dataset' => $objDataSet]);
+        return response()->json(true);
+    }
+    
+    
     /**
      * スキーマ情報のエクスポート
      */

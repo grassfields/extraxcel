@@ -30,8 +30,8 @@ foreach($names_single as $name) {
     $no++;
     $schema = $schemata->getSchema($name, 'single');
     $str.= "<li data-no='".$no."' >\n";
-    $str.= "<p>".e($name)."</p>\n";
-    $str.= "<p>".e($schema->xlrange)."</p>\n";
+    $str.= "<p class='name'>".e($name)."</p>\n";
+    $str.= "<p class='xlrange'>".e($schema->xlrange)."</p>\n";
     $str.= "</li>\n";
 }
 $str.= "</ul>\n";
@@ -46,8 +46,8 @@ foreach($names_multi as $name) {
     $no++;
     $schema = $schemata->getSchema($name, 'multi');
     $str.= "<li data-no='".$no."' >\n";
-    $str.= "<p>".e($name)."</p>\n";
-    $str.= "<p>".e($schema->xlrange)."</p>\n";
+    $str.= "<p class='name'>".e($name)."</p>\n";
+    $str.= "<p class='xlrange'>".e($schema->xlrange)."</p>\n";
     $str.= "</li>\n";
 }
 $str.= "</ul>\n";

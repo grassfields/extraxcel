@@ -53,6 +53,7 @@ ul.filelist {
   left: 0;
   z-index: 800;
   display: block;
+  margin-bottom : 0px;
   padding: 10px 5px;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
