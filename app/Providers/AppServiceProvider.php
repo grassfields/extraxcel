@@ -73,9 +73,23 @@ class AppServiceProvider extends ServiceProvider
             }
         });
         //////////////////////////////
+        // Reader
+        $this->app->bind('Reader', function($app, $param) {
+            switch(strtolower(config('extraxcel.excel_lib'))){
+                case 'phpexcel': $obj=app('App\Reader\PHPExcelReader', $param); break;
+                case 'libxl':    $obj=app('App\Reader\LibXLReader',    $param); break;
+                case 'auto':
+                default:
+                    $obj= (extension_loaded('excel')) ? app('App\Reader\LibXLReader',    $param)
+                                                      : app('App\Reader\PHPExcelReader', $param);
+                    break;
+            }
+            return $obj;
+        });
+        //////////////////////////////
         // Writer
         $this->app->bind('Writer', function($app, $param) {
-            switch(strtolower(config('excel_lib'))){
+            switch(strtolower(config('extraxcel.excel_lib'))){
                 case 'phpexcel': $obj=app('App\Writer\PHPExcelWriter', $param); break;
                 case 'libxl':    $obj=app('App\Writer\LibXLWriter',    $param); break;
                 case 'auto':

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Log;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -25,7 +26,7 @@ class ExtraxcelController extends Controller
             'upfile' => 'required',
         ]);
         
-        $objFile = app('App\Reader\ExcelReader', [ $request->file('upfile') ]);
+        $objFile = app('Reader', [ 'objFile' => $request->file('upfile') ]);
         $objDataSet = app('Dataset');
         $arrLoaded = $objDataSet->load($objFile);
         
@@ -67,6 +68,11 @@ class ExtraxcelController extends Controller
         $objDataSet = app('Dataset');
         $objWriter  = app('Writer', [ $objDataSet ]);
         $filepath   = $objWriter->save();
+        
+        //出力ファイル配列にパスを追加
+        Log::info('dataset-tempfile create [PATH='.$filepath.']');
+        session()->put('outputfiles', $filepath);
+        
         $responseFileName = self::DOWNLOAD_FILENAME."_".date("YmdHi").".xlsx";
         return response()->download($filepath, $responseFileName);
     }
@@ -78,6 +84,11 @@ class ExtraxcelController extends Controller
     {
         $objDataSet = app('Dataset');
         $filepath   = $objDataSet->schemata->save();
+        
+        //出力ファイル配列にパスを追加
+        Log::info('schema-tempfile create [PATH='.$filepath.']');
+        session()->put('outputfiles', $filepath);
+        
         $responseFileName = self::DOWNLOAD_FILENAME."-schema_".date("YmdHi").".json";
         return response()->download($filepath, $responseFileName);
     }
@@ -156,7 +167,8 @@ class ExtraxcelController extends Controller
         
         $dataset = app('Dataset');
         $dataset->initialize();
-        $request->session()->regenerate();  //セッション再生成
+        session()->flush();
+        session()->regenerate();  //セッション再生成
         return redirect('/');
     }
     

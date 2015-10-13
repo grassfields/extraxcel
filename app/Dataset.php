@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App\Reader\ExcelReader;
 use App\Schema\Schemata;
+use App\Reader\ExcelReader;
 
 
 class Dataset
@@ -56,23 +56,23 @@ class Dataset
     /**
     *  Excelファイルのデータを読む
     */
-    public function load(ExcelReader $file) {
+    public function load( ExcelReader $objReader ) {
         
         //ファイル情報を読み込み
         $fileidx = count($this->files);
-        $this->files[$fileidx] = $file->getFileInfo();
+        $this->files[$fileidx] = $objReader->getFileInfo();
         
         //スキーマ情報を読み込み
-        $schemata = $file->getSchemataFromExcel();
+        $schemata = $objReader->getSchemataFromExcel();
         $this->schemata->merge($schemata);
         
         //データの読み込み
-        $dataset_single = $file->readData_single($this->schemata);
-        $dataset_multi  = $file->readData_multi($this->schemata);
+        $dataset_single = $objReader->readData_single($this->schemata);
+        $dataset_multi  = $objReader->readData_multi($this->schemata);
         $this->_dataset_single[$fileidx] = $dataset_single;
         $this->_dataset_multi[$fileidx]  = $dataset_multi;
         
-        $arrRtn = [ 'file'          => $file->getFileInfo(),
+        $arrRtn = [ 'file'          => $objReader->getFileInfo(),
                     'schema'        => $schemata,
                     'data_single'   => $dataset_single,
                     'data_multi'    => $dataset_multi,

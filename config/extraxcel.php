@@ -14,6 +14,6 @@ return [
     |
     */
 
-    'excel_lib' => 'auto',
+    'excel_lib' => 'PHPExcel',
 
 ];
