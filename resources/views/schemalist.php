@@ -1,7 +1,7 @@
 <div id='schemata'>
 
 <div id='schema-controller'>
-    <div class="btn-group" role="group">
+    <div id='schema-controller-button' class="btn-group" role="group">
         <button id='schemaimport' class='btn btn-default btn-xs'>
             <span class='glyphicon glyphicon-open'></span>
             <input id='schemaupload' class='hidden' type='file' name='upschema' data-url='schema/import'>
@@ -13,7 +13,7 @@
     <button id='sort-mode-toggle' class='btn btn-default btn-xs'>
         <span class='glyphicon glyphicon-sort'></span>
     </button>
-    <div class="btn-group" role="group">
+    <div id='sort-mode-button' class="btn-group" role="group">
         <button id='sort-ok' class='btn btn-default btn-xs'>OK</button>
         <button id='sort-cancel' class='btn btn-default btn-xs'>Cancel</button>
     </div>
@@ -30,8 +30,13 @@ foreach($names_single as $name) {
     $no++;
     $schema = $schemata->getSchema($name, 'single');
     $str.= "<li data-no='".$no."' >\n";
-    $str.= "<p class='name'>".e($name)."</p>\n";
-    $str.= "<p class='xlrange'>".e($schema->xlrange)."</p>\n";
+    if ($schemata->read_by == 'name') {
+        $str.= "<p class='name'>".e($name)."</p>\n";
+        $str.= "<p class='xlrange'>".e($schema->xlsheet."&nbsp;!&nbsp;".$schema->xlrange)."</p>\n";
+    } else {
+        $str.= "<p class='xlrange'>".e($schema->xlsheet."&nbsp;!&nbsp;".$schema->xlrange)."</p>\n";
+        $str.= "<p class='name'>".e($name)."</p>\n";
+    }
     $str.= "</li>\n";
 }
 $str.= "</ul>\n";
@@ -46,8 +51,13 @@ foreach($names_multi as $name) {
     $no++;
     $schema = $schemata->getSchema($name, 'multi');
     $str.= "<li data-no='".$no."' >\n";
-    $str.= "<p class='name'>".e($name)."</p>\n";
-    $str.= "<p class='xlrange'>".e($schema->xlrange)."</p>\n";
+    if ($schemata->read_by == 'name') {
+        $str.= "<p class='name'>".e($name)."</p>\n";
+        $str.= "<p class='xlrange'>".e($schema->xlsheet."&nbsp;!&nbsp;".$schema->xlrange)."</p>\n";
+    } else {
+        $str.= "<p class='xlrange'>".e($schema->xlsheet."&nbsp;!&nbsp;".$schema->xlrange)."</p>\n";
+        $str.= "<p class='name'>".e($name)."</p>\n";
+    }
     $str.= "</li>\n";
 }
 $str.= "</ul>\n";

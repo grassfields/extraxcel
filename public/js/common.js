@@ -80,6 +80,10 @@ $('#schemaupload').fileupload({ dataType: 'json',
   スキーマ並べ替え
 *********************************************/
 $('button#sort-mode-toggle').on("click", function(e){
+	$("div#screen").show();
+	$("div#sort-mode-button").show();
+	$("div#schema-controller-button").hide();
+	$("button#sort-mode-toggle").hide();
 	$("ul.schemalist").sortable('enable');
 });
 $("ul.schemalist").sortable({

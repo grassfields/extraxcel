@@ -105,7 +105,7 @@ $str.= "<div class='row'>\n";
 $str.= "  <div class='col-md-4'>\n";
 $str.= "    <select class='form-control' id='sheetidx'>\n";
 $sel = ($sheettype == 's') ? ' selected' : '';
-$str.= "    <option value='single' data-idx='0'".$sel.">セルデータ一覧</option>\n";
+$str.= "    <option value='single' data-idx='0'".$sel.">単一セル</option>\n";
 foreach($names_multi as $idx => $name) {
     $sel = ($sheettype == 'm' && $sheetidx == $idx) ? ' selected' : '';
     $str.= "    <option value='multi' data-idx='".e($idx)."'".$sel.">".e($name)."</option>\n";
@@ -169,6 +169,7 @@ echo $str;
 ?>
         </div>
     </div><!--class="row"-->
+<div id='screen'></div>
 </div><!--class="container-fluid"-->
 
 <footer>

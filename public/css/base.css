@@ -27,7 +27,7 @@ body {
   height  : 250px;
   top: 50px;
   left: 0;
-  z-index: 1000;
+  z-index: 10;
   display: block;
   padding: 20px;
   overflow-x: hidden;
@@ -51,7 +51,6 @@ ul.filelist {
   top: 300px;
   bottom: 0;
   left: 0;
-  z-index: 800;
   display: block;
   margin-bottom : 0px;
   padding: 10px 5px;
@@ -89,14 +88,14 @@ ul.filelist li p {
 /*
  * Sidebar2 (Schema)
  */
-#schemata {
+div#schemata {
   position: fixed;
 	margin-left:200px;
   width   : 160px;
   top: 50px;
   bottom: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 100;
   display: block;
   padding: 10px 5px;
   overflow-x: hidden;
@@ -110,12 +109,21 @@ ul.schemalist li {
 	border-bottom  : 1px solid silver;
 	padding-bottom : 4px;
 	font-size  : 11px;
+	color      : gray;
 }
 
 ul.schemalist li p {
 	width: 100%;
 	margin-bottom : 2px;
+	text-indent   : 16px;
 }
+ul.schemalist li p:first-child {
+	font-size  : 14px;
+	text-indent: 0px;
+	color      : #333;
+}
+
+div#sort-mode-button { display : none; }
 
 /*
  * Main Content
@@ -139,6 +147,19 @@ table.preview td, table.preview th {
 	text-overflow : ellipsis;
 	max-width     : 300px;
 }
+
+div#screen {
+	position : fixed;
+	top    : 0px;
+	left   : 0px;
+	right  : 0px;
+	bottom : 0px;
+	opacity: 0.8;
+	background-color: black;
+  z-index: 50;
+	display : none;
+}
+
 /*
  * Clickable cursor
  */
