@@ -104,6 +104,11 @@ div#schemata {
   border-right: 1px solid #ccc;
 }
 
+div#schemata p.description {
+	font-size  : 11px;
+	color      : gray;
+}
+
 ul.schemalist li {
 	margin-bottom  : 6px;
 	border-bottom  : 1px solid silver;
@@ -124,6 +129,13 @@ ul.schemalist li p:first-child {
 }
 
 div#sort-mode-button { display : none; }
+
+li.ui-state-highlight {
+	margin  : 12px 12px 12px 12px;
+	border  : dotted 2px #f00000;
+	padding : 0px;
+	height  : 50px;
+}
 
 /*
  * Main Content

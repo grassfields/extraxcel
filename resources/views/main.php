@@ -88,7 +88,11 @@ echo "</ul>\n";
 
 //////////////////////////////
 // スキーマリスト
-$viewSchemata = view('schemalist')->with('schemata', $objDataset->schemata);
+if (empty($objDataset->files) && $objDataset->schemata->isEmpty()) {
+    $viewSchemata = view('schemaloader');
+} else {
+    $viewSchemata = view('schemalist')->with('schemata', $objDataset->schemata);
+}
 echo $viewSchemata->render();
 
 

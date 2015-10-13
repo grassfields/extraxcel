@@ -88,8 +88,10 @@ $('button#sort-mode-toggle').on("click", function(e){
 });
 $("ul.schemalist").sortable({
 	disabled : true,
+	axis     : 'y',
 	cursor:    'move',
-	opacity:   0.7
+	opacity:   0.7,
+	placeholder: 'ui-state-highlight'
 });
 $('button#sort-ok').on("click", function(e){
 	var sodr = [];

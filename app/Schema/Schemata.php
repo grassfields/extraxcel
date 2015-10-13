@@ -52,6 +52,13 @@ class Schemata
     /**
      *  スキーマ情報配列を追加する
      */
+    public function isEmpty() {
+        return (empty($this->_single_odr) && empty($this->_multi_odr));
+    }
+    
+    /**
+     *  スキーマ情報配列を追加する
+     */
     public function addSchema($schema, $scope = null) {
         
         if ($schema instanceof PHPExcel_NamedRange) {
@@ -201,15 +208,16 @@ class Schemata
         $this->locked       = $obj->locked;
         $this->read_by      = $obj->read_by;
         
-        foreach((array)$obj->single as $obj) {
-            $this->addSchema($obj);
+        foreach((array)$obj->single as $sch) {
+            $this->addSchema($sch);
         }
-        foreach((array)$obj->multi as $obj) {
-            $this->addSchema($obj);
+        foreach((array)$obj->multi as $sch) {
+            $this->addSchema($sch);
         }
         
         //正常終了
-        return true;
+var_dump($this);
+        return $this;
     }
     
 }
