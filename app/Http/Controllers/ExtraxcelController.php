@@ -25,7 +25,7 @@ class ExtraxcelController extends Controller
             'upfile' => 'required',
         ]);
         
-        $objFile = app('App\Reader\ExcelReader', [ $request->file('upfile') ]);
+        $objFile = app('Reader', [ 'objFile' => $request->file('upfile') ]);
         $objDataSet = app('Dataset');
         $arrLoaded = $objDataSet->load($objFile);
         
