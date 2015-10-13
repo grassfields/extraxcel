@@ -1,7 +1,7 @@
 {
     "name": "grassfield/extraxcel",
     "description": "Excel files extract tool.",
-    "keywords": ["framework", "laravel"],
+    "keywords": ["framework", "laravel", "php_excel"],
     "license": "MIT",
     "type": "project",
     "require": {
