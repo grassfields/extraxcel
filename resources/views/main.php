@@ -92,42 +92,44 @@ $viewSchemata = view('schemalist')->with('schemata', $objDataset->schemata);
 echo $viewSchemata->render();
 
 
-//////////////////////////////
-//プレビュー画面ヘッダ
-$names_single = $objDataset->schemata->getSchemaNames('single');
-$names_multi  = $objDataset->schemata->getSchemaNames('multi');
 $str = "";
 $str.= "<div class='main'>\n";
-$str.= "<div class='page-header'>\n";
-$str.= "  <h1>Preview</h1>\n";
-$str.= "</div>\n";
-$str.= "<div class='row'>\n";
-$str.= "  <div class='col-md-4'>\n";
-$str.= "    <select class='form-control' id='sheetidx'>\n";
-$sel = ($sheettype == 's') ? ' selected' : '';
-$str.= "    <option value='single' data-idx='0'".$sel.">セルデータ一覧</option>\n";
-foreach($names_multi as $idx => $name) {
-    $sel = ($sheettype == 'm' && $sheetidx == $idx) ? ' selected' : '';
-    $str.= "    <option value='multi' data-idx='".e($idx)."'".$sel.">".e($name)."</option>\n";
-}
-$str.= "    </select>\n";
-$str.= "  </div>\n";
-$str.= "  <div class='col-md-3 col-md-offset-5'>\n";
-$str.= "    <a href='download' class='btn btn-primary btn-lg btn-block'>";
-$str.= "        <span class='glyphicon glyphicon-download-alt'></span>";
-$str.= "        ダウンロード";
-$str.= "    </a>\n";
-$str.= "  </div>\n";
-$str.= "</div>\n";
 
 if (empty($objDataset->files)) {
-    //データ無し
+    //////////////////////////////
+    //WELCOME画面
     $str.= view("welcome")->render();
-    var_dump($objDataset->schemata);
     
 } else {
     //////////////////////////////
+    //プレビュー画面ヘッダ
+    $names_single = $objDataset->schemata->getSchemaNames('single');
+    $names_multi  = $objDataset->schemata->getSchemaNames('multi');
+    
+    //////////////////////////////
     //プレビューテーブルヘッダ
+    $str.= "<div class='page-header'>\n";
+    $str.= "  <h1>Preview</h1>\n";
+    $str.= "</div>\n";
+    $str.= "<div class='row'>\n";
+    $str.= "  <div class='col-md-4'>\n";
+    $str.= "    <select class='form-control' id='sheetidx'>\n";
+    $sel = ($sheettype == 's') ? ' selected' : '';
+    $str.= "    <option value='single' data-idx='0'".$sel.">セルデータ一覧</option>\n";
+    foreach($names_multi as $idx => $name) {
+        $sel = ($sheettype == 'm' && $sheetidx == $idx) ? ' selected' : '';
+        $str.= "    <option value='multi' data-idx='".e($idx)."'".$sel.">".e($name)."</option>\n";
+    }
+    $str.= "    </select>\n";
+    $str.= "  </div>\n";
+    $str.= "  <div class='col-md-3 col-md-offset-5'>\n";
+    $str.= "    <a href='download' class='btn btn-primary btn-lg btn-block'>";
+    $str.= "        <span class='glyphicon glyphicon-download-alt'></span>";
+    $str.= "        ダウンロード";
+    $str.= "    </a>\n";
+    $str.= "  </div>\n";
+    $str.= "</div>\n";  //class='row'
+
     if ($sheettype == 's') {
         $header     = $names_single;
         $view_name  = 'preview_single';
@@ -164,10 +166,8 @@ if (empty($objDataset->files)) {
 //HTML出力
 echo $str;
 
-//var_dump($objDataset->schemata->getSchemaNames('multi'));
-//var_dump($objDataset->getDataset('single'));
 ?>
-        </div>
+        </div><!--class="main"-->
     </div><!--class="row"-->
 </div><!--class="container-fluid"-->
 
