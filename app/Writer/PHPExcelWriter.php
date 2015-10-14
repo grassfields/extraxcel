@@ -127,6 +127,10 @@ class PHPExcelWriter {
             $this->writeFileInfo($objSheet, $row, $fileidx, $files[$fileidx]);
             $col = count($this->_fileinfo_names);
             foreach($arrNames as $name) {
+                if (!isset($arrData[$name])) {
+                    $this->writeCell($objSheet, $row, $col++, '', 't'] );
+                    continue;
+                }
                 $field = $arrData[$name];
                 if ($field['type'] != Schema::TYPE_CELL) continue;
                 $this->writeCell($objSheet, $row, $col++, $field['data']['v'], $field['data']['t']);

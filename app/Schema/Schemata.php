@@ -215,8 +215,10 @@ class Schemata
             $this->addSchema($sch);
         }
         
+        $this->_single_odr  = $obj->single_odr;
+        $this->_multi_odr   = $obj->multi_odr;
+        
         //正常終了
-var_dump($this);
         return $this;
     }
     
