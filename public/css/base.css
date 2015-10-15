@@ -15,7 +15,7 @@ body {
  * Hide default border to remove 1px line.
  */
 .navbar-fixed-top {
-  border: 0;
+  border: 1px;
 }
 
 /*
@@ -134,13 +134,21 @@ div#schemata {
   padding : 0px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: silver;
+  background-color: #eee;
   border-right: 1px solid #ccc;
 }
 
-p.description {
-	font-size  : 11px;
-	color      : gray;
+div#schemata h4 {
+	margin  : 0px;
+	padding : 10px 2px;
+  background-color: #B0CCB0;
+}
+
+ul.schemalist {
+	margin        : 0px;
+	padding-left  : 4px;
+	padding-bottom: 4px;
+  background-color: #B0CCB0;
 }
 
 ul.schemalist li.ui-sortable-handle {
@@ -172,6 +180,27 @@ li.ui-state-highlight {
 	height  : 40px;
 }
 
+div#schema-readby {
+	padding-top : 10px;
+	padding-left: 8px;
+}
+div#schema-readby span.glyphicon {
+	float     : left;
+	margin-top: 4px;
+	font-size : 16px;
+	color     : gray;
+}
+div#schema-readby p {
+	float : right;
+	width : 120px;
+}
+
+
+p.description {
+	font-size  : 11px;
+	color      : gray;
+}
+
 /*
  * Main Content
  */
@@ -181,9 +210,15 @@ div.main {
   padding-left: 40px;
 }
 
-table.preview {
-	margin : 20px 0px 10px;
+div.table-responsive {
+	position : fixed;
+	overflow-y : auto;
+  top     : 250px;
+  bottom  : 0px;
+  left    : 380px;
+  right   : 20px;
 }
+
 table.preview thead { background-color:#C0EEC0; }
 table.preview tbody:nth-child(even) { background-color:#F2F8F2; }
 table.preview tbody:nth-child(odd)  { background-color:#FFFFFF; }

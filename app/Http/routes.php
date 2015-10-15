@@ -17,6 +17,7 @@ Route::delete('file/remove','ExtraxcelController@removeFile');
 
 Route::get( 'schema/export','ExtraxcelController@exportSchema');
 Route::post('schema/sort',  'ExtraxcelController@sortSchema');
+Route::post('schema/readby','ExtraxcelController@changeReadBy');
 Route::post('schema/import','ExtraxcelController@importSchema');
 
 

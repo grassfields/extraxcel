@@ -18,7 +18,7 @@ class Schemata
     *  変数定義
     */
     public  $locked;    //ロック（これ以上拡張しない）
-    public  $read_by;   //データ読込キー（名前orセル範囲）
+    public  $read_by;   //データ取得方法（名前orセル範囲）
     public  $filepath;  //設定ファイル保存パス
     
     private $_single;
@@ -50,10 +50,19 @@ class Schemata
     }
     
     /**
-     *  スキーマ情報配列を追加する
+     *  スキーマ情報の有無を返す（空ならTrue）
      */
     public function isEmpty() {
         return (empty($this->_single_odr) && empty($this->_multi_odr));
+    }
+    
+    /**
+     *  データ取得方法を切り替える
+     */
+    public function changeReadBy() {
+        //変更（'name'←→'range'トグル）
+        $this->read_by = ($this->read_by == 'name') ? 'range' : 'name';
+        return;
     }
     
     /**

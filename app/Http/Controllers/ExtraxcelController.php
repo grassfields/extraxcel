@@ -119,6 +119,22 @@ class ExtraxcelController extends Controller
     
     
     /**
+     * データ取得方法を変更
+     */
+    public function changeReadBy(Request $request)
+    {
+        $objDataSet = app('Dataset');
+        
+        //変更
+        $objDataSet->schemata->changeReadBy();
+        
+        //セッションに保存
+        session(['Dataset' => $objDataSet]);
+        return response()->json(true);
+    }
+    
+    
+    /**
      * スキーマ情報のエクスポート
      */
     public function importSchema(Request $request)

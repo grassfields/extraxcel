@@ -83,7 +83,7 @@ $('button#sort-mode-toggle').on("click", function(e){
 	$("div#screen").show();
 	$("div#sort-mode-button").show();
 	$("div#schema-controller-button").hide();
-	$("button#sort-mode-toggle").hide();
+	$("div#schema-readby").hide();
 	$("ul.schemalist").sortable('enable');
 });
 $("ul.schemalist").sortable({
@@ -115,6 +115,18 @@ $('button#sort-ok').on("click", function(e){
 });
 $('button#sort-cancel').on("click", function(e){
 	location.reload();
+});
+
+/********************************************
+  データ取得方法の変更
+*********************************************/
+$('a#readby-change').on("click", function(e){
+	var token = $('input[name="_token"]').val();
+	var param = { _token     : token  }
+	$.post( 'schema/readby', param, function(data){
+		location.reload(true);
+	}, 'json');
+	
 });
 
 /********************************************
