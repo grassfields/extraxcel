@@ -1,18 +1,5 @@
 <div id='schema-controller'>
     <h3>データ取得</h3>
-    <div id='schema-controller-button' class="btn-group" role="group">
-        <a href='schema/export' class='btn btn-default btn-xs'>
-            <span class='glyphicon glyphicon-floppy-disk'></span>&nbsp;保存
-        </a>
-        <button id='sort-mode-toggle' class='btn btn-default btn-xs'>
-            <span class='glyphicon glyphicon-sort'></span>&nbsp;並び替え
-        </button>
-    </div>
-    <div id='sort-mode-button' class="btn-group" role="group">
-        <p class='description'>項目をマウスでドラッグして並び替えてください</p>
-        <button id='sort-ok' class='btn btn-default btn-xs'>OK</button>
-        <button id='sort-cancel' class='btn btn-default btn-xs'>Cancel</button>
-    </div>
 <?php
 /////////////////////
 // データ取得方法
@@ -28,7 +15,19 @@ if ($schemata->read_by == 'name') {
 $str.= "</div>\n";
 echo $str;
 ?>
-    
+    <div id='schema-controller-button' class="btn-group" role="group">
+        <a href='schema/export' class='btn btn-default btn-xs'>
+            <span class='glyphicon glyphicon-floppy-disk'></span>&nbsp;保存
+        </a>
+        <button id='sort-mode-toggle' class='btn btn-default btn-xs'>
+            <span class='glyphicon glyphicon-sort'></span>&nbsp;並び替え
+        </button>
+    </div>
+    <div id='sort-mode-button' class="btn-group" role="group">
+        <p class='description'>項目をマウスでドラッグして並び替えてください</p>
+        <button id='sort-ok' class='btn btn-default btn-xs'>OK</button>
+        <button id='sort-cancel' class='btn btn-default btn-xs'>Cancel</button>
+    </div>
 </div>
 
 <div id='schemata'>

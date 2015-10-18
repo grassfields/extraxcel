@@ -122,6 +122,10 @@ div#schema-controller {
   border-bottom: 1px solid #ccc;
 }
 
+div#schema-controller h3{
+	margin-top : 5px;
+}
+
 div#schemata {
   position: fixed;
 	margin-left:200px;
