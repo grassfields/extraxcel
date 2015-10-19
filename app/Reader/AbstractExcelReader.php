@@ -33,12 +33,6 @@ abstract class AbstractExcelReader {
         if ($objFile->isValid() == false) {
             throw new \Exception('File upload is failed.');
         }
-        if (    $objFile->getClientOriginalExtension() != self::EXT_EXCEL_BIFF
-             && $objFile->getClientOriginalExtension() != self::EXT_EXCEL_OOXML ) {
-            $msg = 'Upload file is not Excel format. [EXT='.$objFile->getClientOriginalExtension().']';
-            throw new \Exception($msg);
-        }
-        
         $this->file  = $objFile;
         $this->ext   = $objFile->getClientOriginalExtension();
         $this->dt    = new DateTime();
@@ -59,10 +53,11 @@ abstract class AbstractExcelReader {
     */
     public function getFileInfo() {
         
-        $arr = [ "name"   => $this->file->getClientOriginalName(),
-                 "size"   => $this->getSize(),
-                 "dt"     => $this->dt,
-                 "time"   => $this->dt->format("H:i") ];
+        $arr = [ "name"    => $this->file->getClientOriginalName(),
+                 "size"    => $this->file->getSize(),
+                 "size_si" => $this->getSize(),
+                 "dt"      => $this->dt,
+                 "time"    => $this->dt->format("H:i") ];
         return $arr;
     }
     

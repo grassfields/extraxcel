@@ -26,8 +26,8 @@ class ExtraxcelController extends Controller
             'upfile' => 'required',
         ]);
         
-        $objFile = app('Reader', [ 'objFile' => $request->file('upfile') ]);
         $objDataSet = app('Dataset');
+        $objFile = app('Reader', [ 'objFile' => $request->file('upfile') ]);
         $arrLoaded = $objDataSet->load($objFile);
         
         //セッションに保存

@@ -27,6 +27,12 @@ class PHPExcelReader extends AbstractExcelReader {
     */
     public function getSchemataFromExcel() {
         
+        //Excelファイルか確認する
+        if (    $this->file->getClientOriginalExtension() != self::EXT_EXCEL_BIFF
+             && $this->file->getClientOriginalExtension() != self::EXT_EXCEL_OOXML ) {
+            throw new \Exception('Not Excel format.');
+        }
+        
         //Excelファイルを開く
         $filepath = $this->file->getPathname();
         $objPHPExcel = PHPExcel_IOFactory::load($filepath);

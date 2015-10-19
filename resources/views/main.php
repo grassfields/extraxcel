@@ -63,12 +63,17 @@ if (is_array($addScriptFiles)) {
 //////////////////////////////
 // ファイルリスト
 $no  = 0;
+$total_size = 0;
 $str = "";
 foreach($objDataset->files as $fileidx => $file) {
     $no = $fileidx + 1;
-    $str.= "<li data-fileidx='".e($fileidx)."' >\n";
+    $total_size+=$file['size'];
+    $cls = (empty($file['error'])) ? "" : "class='error'";
+    $str.= "<li data-fileidx='".e($fileidx)."' ".$cls.">\n";
     $str.= "<span>No.".e($no)."</span>\n";
-    $str.= "<date>".e($file['time'])."</date>\n";
+    $str.= "<span class='result'>";
+    $str.= (empty($file['error'])) ? e($file['size_si']) : e($file['error']);
+    $str.= "</span>\n";
     $str.= "<button type='button' class='btn btn-xs close'>&times;</button>\n";
     $str.= "<p>".e($file['name'])."</p>\n";
     $str.= "</li>\n";
@@ -80,7 +85,7 @@ echo "<input id='fileupload' class='hidden' type='file' name='upfile' data-url='
 echo " Drop here !!\n";
 echo "</a>\n";
 echo "<p class='text-right'>";
-echo "<span class='badge'>".$no."</span>";
+echo "<span id='filecounter'>".$no."</span>&nbsp;files.";
 echo "</p>\n";
 echo "</div>\n";
 echo "<ul class='filelist list-unstyled' data-cnt='".$no."'>\n";

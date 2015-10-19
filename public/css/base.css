@@ -62,22 +62,31 @@ ul.filelist {
 
 ul.filelist li {
 	height  : 40px;
-	margin-bottom  : 6px;
 	border-bottom  : 1px solid silver;
+	padding-top    : 6px;
 	padding-bottom : 4px;
 	font-size  : 11px;
+}
+ul.filelist li.error  {
+  background-color: #fff8f8;
 }
 
 ul.filelist div.progress {
 	margin-bottom : 0px;
 }
 
-ul.filelist li date {
-	margin-left : 10px;
+ul.filelist li span.result {
+	margin-left : 5px;
+	color       : silver;
+}
+
+ul.filelist li.error span.result {
+	margin-left : 5px;
+	color       : darkred;
 }
 
 ul.filelist li p {
-	width: 100%;
+	width: 88%;
 	margin-bottom : 2px;
 	white-space: nowrap;
 	overflow: hidden;

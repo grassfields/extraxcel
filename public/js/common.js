@@ -21,7 +21,10 @@ $('#fileupload').fileupload({ dataType: 'json',
 	.on('fileuploadadd', function (e, data) {
 		var $filelist = $("ul.filelist");
 		$.each(data.files, function(idx, fl){
+			var total = $('span#filecounter').text();
 			uploading_filecount++;
+			total++;
+			$('span#filecounter').text(total);
 			uploadStart($filelist, fl);
 		});
 	})
@@ -152,9 +155,8 @@ function uploadStart($parent, fl) {
 	var no = $parent.data('cnt') + 1;
 	$parent.data('cnt', no);
 	
-	$finfo.append($("<span>").text(no))
-	      .append("<date>")
-	      .append("<span class='size'>")
+	$finfo.append($("<span>").text('No.'+no))
+	      .append("<span class='result'>")
 	      .append($("<p>").text(fl.name))
 	      .append($("<div class='progress' style='height:3px;'>").append($bar));
 	$finfo.addClass('uploading');
@@ -170,17 +172,11 @@ function uploadComplete(e, data) {
 	data.files[0].bar.parents(".progress").delay(500).fadeOut(500);
 	$li.removeClass('uploading');
 	
-	/*
-	//ファイルリスト
-	$li.find("date").text(data.result.file.dt);
-	$li.find("span.size").text(data.result.file.size);
-	//スキーマ
-	if (data.result.schemata_html) {
-		$("div#schemata").html(data.result.schemata_html);
+	if (data.result.error) {
+		$li.addClass('error');
+		$li.find('span.result').text(data.result.error);
+	} else {
+		$li.find('span.result').text(data.result.file.size_si);
 	}
-	if (data.result.dataset_html) {
-		$("table.preview").append(data.result.dataset_html);
-	}
-	*/
 }
 

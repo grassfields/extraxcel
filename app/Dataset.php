@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Schema\Schemata;
-use App\Reader\ExcelReader;
+use App\Reader\AbstractExcelReader;
 
 
 class Dataset
@@ -56,7 +56,7 @@ class Dataset
     /**
     *  Excelファイルのデータを読む
     */
-    public function load( ExcelReader $objReader ) {
+    public function load( AbstractExcelReader $objReader ) {
         
         $err = "";
         
@@ -72,12 +72,16 @@ class Dataset
             //データの読み込み
             $dataset_single = $objReader->readData_single($this->schemata);
             $dataset_multi  = $objReader->readData_multi($this->schemata);
-            $this->_dataset_single[$fileidx] = $dataset_single;
-            $this->_dataset_multi[$fileidx]  = $dataset_multi;
         } catch(\Exception $e) {
             $schemata = null;
             $err = $e->getMessage();
+            $dataset_single = [];
+            $dataset_multi  = [];
         }
+        
+        $this->files[$fileidx]['error']  = $err;
+        $this->_dataset_single[$fileidx] = $dataset_single;
+        $this->_dataset_multi[$fileidx]  = $dataset_multi;
         
         $arrRtn = [ 'file'          => $objReader->getFileInfo(),
                     'schema'        => $schemata,
