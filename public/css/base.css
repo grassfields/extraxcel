@@ -15,7 +15,7 @@ body {
  * Hide default border to remove 1px line.
  */
 .navbar-fixed-top {
-  border: 1px;
+  border-bottom: 1px solid #ccc;
 }
 
 /*
@@ -100,7 +100,7 @@ div#schema-loader {
   padding : 10px 5px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #eee;
+  background-color: #f8f8f8;
   border-right : 1px solid #ccc;
   border-bottom: 1px solid #ccc;
 }
@@ -117,7 +117,7 @@ div#schema-controller {
   padding : 10px 5px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #eee;
+  background-color: #f8f8f8;
   border-right : 1px solid #ccc;
   border-bottom: 1px solid #ccc;
 }
@@ -138,27 +138,27 @@ div#schemata {
   padding : 0px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #eee;
+  background-color: #f8f8f8;
   border-right: 1px solid #ccc;
 }
 
 div#schemata h4 {
 	margin  : 0px;
 	padding : 10px 2px;
-  background-color: #B0CCB0;
+  background-color: #ddd;
 }
 
 ul.schemalist {
 	margin        : 0px;
 	padding-left  : 4px;
 	padding-bottom: 4px;
-  background-color: #B0CCB0;
+  background-color: #ddd;
 }
 
 ul.schemalist li.ui-sortable-handle {
 	margin-bottom  : 1px;
 	padding        : 4px 4px;
-  background-color: #eee;
+  background-color: #f8f8f8;
 	font-size  : 11px;
 	color      : gray;
 	cursor     : pointer;

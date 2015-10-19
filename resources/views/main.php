@@ -59,13 +59,6 @@ if (is_array($addScriptFiles)) {
 <div class="container-fluid">
     <?php echo csrf_field()."\n"; ?>
     <div class="row">
-        <div id='file-controller'>
-            <a id='filedroparea' class='btn btn-default btn-lg btn-block'>
-                <input id='fileupload' class='hidden' type='file' name='upfile' data-url='file' multiple>
-                Drop here !!
-            </a>
-            <hr>
-        </div>
 <?php
 //////////////////////////////
 // ファイルリスト
@@ -74,13 +67,22 @@ $str = "";
 foreach($objDataset->files as $fileidx => $file) {
     $no = $fileidx + 1;
     $str.= "<li data-fileidx='".e($fileidx)."' >\n";
-    $str.= "<span>".e($no)."</span>\n";
+    $str.= "<span>No.".e($no)."</span>\n";
     $str.= "<date>".e($file['time'])."</date>\n";
     $str.= "<button type='button' class='btn btn-xs close'>&times;</button>\n";
     $str.= "<p>".e($file['name'])."</p>\n";
     $str.= "</li>\n";
 }
 //HTML出力
+echo "<div id='file-controller'>\n";
+echo "<a id='filedroparea' class='btn btn-default btn-lg btn-block'>\n";
+echo "<input id='fileupload' class='hidden' type='file' name='upfile' data-url='file' multiple>\n";
+echo " Drop here !!\n";
+echo "</a>\n";
+echo "<p class='text-right'>";
+echo "<span class='badge'>".$no."</span>";
+echo "</p>\n";
+echo "</div>\n";
 echo "<ul class='filelist list-unstyled' data-cnt='".$no."'>\n";
 echo $str;
 echo "</ul>\n";

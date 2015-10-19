@@ -7,7 +7,7 @@ use App\Schema\Schemata;
 use DateTime;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-abstract class ExcelReader {
+abstract class AbstractExcelReader {
 
     /**
     *  定数定義
@@ -22,6 +22,7 @@ abstract class ExcelReader {
     protected $obj;
     protected $ext;
     protected $dt;
+    protected $err;
     
     /**
     *  コンストラクタ
@@ -41,6 +42,7 @@ abstract class ExcelReader {
         $this->file  = $objFile;
         $this->ext   = $objFile->getClientOriginalExtension();
         $this->dt    = new DateTime();
+        $this->err   = "";
     }
     
     /**
@@ -83,6 +85,13 @@ abstract class ExcelReader {
         }
         
         return $str;
+    }
+    
+    /**
+    *  実行時エラーのメッセージを返す
+    */
+    public function getErrorMessage() {
+        return $this->err;
     }
     
     /**

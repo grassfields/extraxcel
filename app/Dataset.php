@@ -58,24 +58,32 @@ class Dataset
     */
     public function load( ExcelReader $objReader ) {
         
+        $err = "";
+        
         //ファイル情報を読み込み
         $fileidx = count($this->files);
         $this->files[$fileidx] = $objReader->getFileInfo();
         
-        //スキーマ情報を読み込み
-        $schemata = $objReader->getSchemataFromExcel();
-        $this->schemata->merge($schemata);
-        
-        //データの読み込み
-        $dataset_single = $objReader->readData_single($this->schemata);
-        $dataset_multi  = $objReader->readData_multi($this->schemata);
-        $this->_dataset_single[$fileidx] = $dataset_single;
-        $this->_dataset_multi[$fileidx]  = $dataset_multi;
+        try {
+            //スキーマ情報を読み込み
+            $schemata = $objReader->getSchemataFromExcel();
+            $this->schemata->merge($schemata);
+            
+            //データの読み込み
+            $dataset_single = $objReader->readData_single($this->schemata);
+            $dataset_multi  = $objReader->readData_multi($this->schemata);
+            $this->_dataset_single[$fileidx] = $dataset_single;
+            $this->_dataset_multi[$fileidx]  = $dataset_multi;
+        } catch(\Exception $e) {
+            $schemata = null;
+            $err = $e->getMessage();
+        }
         
         $arrRtn = [ 'file'          => $objReader->getFileInfo(),
                     'schema'        => $schemata,
                     'data_single'   => $dataset_single,
                     'data_multi'    => $dataset_multi,
+                    'error'         => $err
                   ];
         return $arrRtn;
     }

@@ -11,7 +11,7 @@ use PHPExcel_Cell;
 use PHPExcel_IOFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class LibXLReader extends ExcelReader {
+class LibXLReader extends AbstractExcelReader {
 
     /**
     *  定数定義
