@@ -26,8 +26,6 @@ class Dataset
     private $_dataset_multi;
     
     private $_errlist;
-    private $_posRow;   //シート別行番号
-    private $_idxCol;   //列番号
     private $_format;   //セルフォーマット
     
     /**
@@ -48,8 +46,6 @@ class Dataset
         $this->_dataset_single  = array();
         $this->_dataset_multi   = array();
         $this->_errlist  = array();
-        $this->_posRow   = array();
-        $this->_idxCol   = array();
         $this->_format   = array();
     }
     
