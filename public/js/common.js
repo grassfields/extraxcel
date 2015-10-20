@@ -156,7 +156,7 @@ function uploadStart($parent, fl) {
 	$parent.data('cnt', no);
 	
 	$finfo.append($("<span>").text('No.'+no))
-	      .append("<span class='result'>")
+	      .append("<span class='size'>")
 	      .append($("<p>").text(fl.name))
 	      .append($("<div class='progress' style='height:3px;'>").append($bar));
 	$finfo.addClass('uploading');
@@ -176,7 +176,7 @@ function uploadComplete(e, data) {
 		$li.addClass('error');
 		$li.find('span.result').text(data.result.error);
 	} else {
-		$li.find('span.result').text(data.result.file.size_si);
+		$li.find('span.size').text(data.result.file.size_si);
 	}
 }
 

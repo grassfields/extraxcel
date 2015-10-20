@@ -24,9 +24,9 @@ body {
 #file-controller {
   position: fixed;
   width   : 200px;
-  height  : 250px;
-  top: 50px;
-  left: 0;
+  height  : 220px;
+  top     : 50px;
+  left    : 0;
   z-index: 10;
   display: block;
   padding: 20px;
@@ -48,23 +48,23 @@ body {
 ul.filelist {
   position: fixed;
   width   : 200px;
-  top: 300px;
-  bottom: 0;
-  left: 0;
+  top     : 270px;
+  bottom  : 0;
+  left    : 0;
   display: block;
   margin-bottom : 0px;
-  padding: 10px 5px;
+  padding       : 0px;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
   background-color: #f8f8f8;
-  border-right: 1px solid #ccc;
+  border-top    : 1px solid silver;
+  border-right  : 1px solid #ccc;
 }
 
 ul.filelist li {
-	height  : 40px;
+	/*height  : 45px;*/
 	border-bottom  : 1px solid silver;
-	padding-top    : 6px;
-	padding-bottom : 4px;
+	padding        : 6px 5px 4px;
 	font-size  : 11px;
 }
 ul.filelist li.error  {
@@ -75,7 +75,7 @@ ul.filelist div.progress {
 	margin-bottom : 0px;
 }
 
-ul.filelist li span.result {
+ul.filelist li span.size {
 	margin-left : 5px;
 	color       : silver;
 }
@@ -131,7 +131,7 @@ div#schema-controller {
   border-bottom: 1px solid #ccc;
 }
 
-div#schema-controller h3{
+h3 {
 	margin-top : 5px;
 }
 

@@ -71,11 +71,10 @@ foreach($objDataset->files as $fileidx => $file) {
     $cls = (empty($file['error'])) ? "" : "class='error'";
     $str.= "<li data-fileidx='".e($fileidx)."' ".$cls.">\n";
     $str.= "<span>No.".e($no)."</span>\n";
-    $str.= "<span class='result'>";
-    $str.= (empty($file['error'])) ? e($file['size_si']) : e($file['error']);
-    $str.= "</span>\n";
+    $str.= "<span class='size'>".e($file['size_si'])."</span>\n";
     $str.= "<button type='button' class='btn btn-xs close'>&times;</button>\n";
     $str.= "<p>".e($file['name'])."</p>\n";
+    $str.= "<span class='result'>".e($file['error'])."</span>\n";
     $str.= "</li>\n";
 }
 //HTML出力
