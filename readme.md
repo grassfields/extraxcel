@@ -22,7 +22,7 @@ Microsoft Officeも不要です。
 
 簡単な操作で最大限の作業効率化を。  
 
-
+-----------------------
 ## システム要件 - System Requirement
 
 + Linux系サーバ または Windowsサーバ
@@ -33,32 +33,32 @@ Microsoft Officeも不要です。
 + mb_string が有効に設定されていること
 + composerが利用可能であること
 
-
+-----------------------
 ## インストールと設定 - Installation & Setting
 
 1. 任意のディレクトリにおいて、composerを実行します。
 
-    > php composer.phar create-project grassfield/extraxcel extraxcel
+>     php composer.phar create-project grassfield/extraxcel extraxcel
 
 2. publicディレクトリをお使いのウェブサーバのドキュメントルート配下にシンボリックリンクとして設置します。
 
     Linux:
 
-    > ln -s ./extraxcel/public (DocumentRoot)
+>     ln -s ./extraxcel/public (DocumentRoot)
 
     Windows:
 
-    > mklink /D (DocumentRoot) ./extraxcel/public
+>     mklink /D (DocumentRoot) ./extraxcel/public
 
 3. デフォルトのログ出力先とそれ以下の全てのファイルに、Apacheが書き込みできるパーミッションを設定してください。(この手順はWindowsサーバーでは不要です)
 
-    > chmod -R go+rw ./extraxcel
+>     chmod -R go+rw ./extraxcel
 
 4. ウェブブラウザからアクセスします。  
 スタートページが表示されれば成功です。
 
 
-
+-----------------------
 ### License
 
 Extraxcel is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
