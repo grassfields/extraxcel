@@ -41,6 +41,7 @@ Microsoft Officeも不要です。
     > php composer.phar create-project grassfield/extraxcel extraxcel
 
 2. publicディレクトリをお使いのウェブサーバのドキュメントルート配下にシンボリックリンクとして設置します。
+
     Linux:
 
     > ln -s ./extraxcel/public (DocumentRoot)
@@ -53,6 +54,8 @@ Microsoft Officeも不要です。
 
     > chmod -R go+rw ./extraxcel
 
+4. ウェブブラウザからアクセスします。  
+スタートページが表示されれば成功です。
 
 
 
