@@ -5,7 +5,6 @@ namespace App\Schema;
 use PHPExcel_NamedRange;
 use PHPExcel_Cell;
 use PHPExcel_Exception;
-use ExcelBook;
 
 class Schema
 {
@@ -26,6 +25,7 @@ class Schema
     const REQUIRE_NOTALL   = "notall";    //一つ以上の入力必須
     const REQUIRE_NON      = "non";       //任意（空を許可）
     const REQUIRE_IGNORE   = "ignore";    //処理対象外
+    const SCOPE_WORKBOOK   = -1;
     
     /**
     *  変数定義
@@ -82,7 +82,7 @@ class Schema
         } catch(PHPExcel_Exception $e) {
             $type = self::TYPE_NON; //対象外
         }
-        if ($scope != ExcelBook::SCOPE_WORKBOOK) {
+        if ($scope != self::SCOPE_WORKBOOK) {
             //スコープ範囲が「ブック」以外は非対応
             $type = self::TYPE_NON; //対象外
         }
@@ -169,7 +169,7 @@ class Schema
                 if (    ($this->name == ExpoDataSheet::SHEETNAME_CELL)
                      || ($this->name == ExpoDataSheet::SHEETNAME_ERR)) {
                     $arrData["msg"] = "「".$this->name."」はシステムで予約された用語のため、フォームの項目としては使用できません）";
-                } else if ($this->xlscope != ExcelBook::SCOPE_WORKBOOK) {
+                } else if ($this->xlscope != self::SCOPE_WORKBOOK) {
                     $arrData["msg"] = "「".$this->name."」は範囲が[Book]ではないため、フォームの項目としては使用できません）";
                 } else {
                     $arrData["msg"] = "セル参照範囲「".$this->xlrange."」は非対応です。";
