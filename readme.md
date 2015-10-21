@@ -38,7 +38,7 @@ Microsoft Officeも不要です。
 
 1. 任意のディレクトリにおいて、composerを実行します。
 
-        php composer.phar create-project grassfield/extraxcel extraxcel  
+        php composer.phar create-project grassfields/extraxcel extraxcel  
 
 2. publicディレクトリをお使いのウェブサーバのドキュメントルート配下にシンボリックリンクとして設置します。
 
@@ -52,7 +52,7 @@ Microsoft Officeも不要です。
 
 3. デフォルトのログ出力先とそれ以下の全てのファイルに、Apacheが書き込みできるパーミッションを設定してください。(この手順はWindowsサーバーでは不要です)
 
-        chmod -R go+rw ./extraxcel
+        chmod -R go+rw ./extraxcel/storage
 
 4. ウェブブラウザからアクセスします。  
 スタートページが表示されれば成功です。

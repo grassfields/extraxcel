@@ -1,5 +1,5 @@
 {
-    "name": "grassfield/extraxcel",
+    "name": "grassfields/extraxcel",
     "description": "Excel files extract tool.",
     "keywords": ["framework", "laravel", "php_excel"],
     "license": "MIT",
@@ -40,7 +40,8 @@
             "php artisan optimize"
         ],
         "post-root-package-install": [
-            "php -r \"copy('.env.example', '.env');\""
+            "php -r \"copy('.env.example', '.env');\"",
+            "chmod -R go+rw storage",
         ],
         "post-create-project-cmd": [
             "php artisan key:generate"
