@@ -38,11 +38,11 @@ Microsoft Officeも不要です。
 
 1. 任意のディレクトリにおいて、composerを実行します。
 
-> php composer.phar create-project grassfield/extraxcel .
+    > php composer.phar create-project grassfield/extraxcel .
 
 2. デフォルトのログ出力先に次のディレクトリとそれ以下の全てのファイルに、Apacheが書き込みできるパーミッションを設定してください。(この手順はWindowsサーバーでは不要です)
 
-> chmod -R go+rw ./extraxcel
+    > chmod -R go+rw ./extraxcel
 
 
 
