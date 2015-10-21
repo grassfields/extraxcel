@@ -1,9 +1,10 @@
 Extraxcel
 ==============================
 
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+[![Latest Stable Version](https://poser.pugx.org/grassfields/extraxcel/v/stable)](https://packagist.org/packages/grassfields/extraxcel) 
+[![Total Downloads](https://poser.pugx.org/grassfields/extraxcel/downloads)](https://packagist.org/packages/grassfields/extraxcel) 
+[![Latest Unstable Version](https://poser.pugx.org/grassfields/extraxcel/v/unstable)](https://packagist.org/packages/grassfields/extraxcel) 
+[![License](https://poser.pugx.org/grassfields/extraxcel/license)](https://packagist.org/packages/grassfields/extraxcel)
 
 Extraxcelは単票形式のExcelファイルを複数束ね、データを抽出して１つの帳票形式のExcelファイルにするWEBアプリケーションです。
 
@@ -44,7 +45,7 @@ Microsoft Officeも不要です。
 
     Linux:
 
-        ln -s ./extraxcel/public (DocumentRoot)
+        ln -s (FullPath)/extraxcel/public (DocumentRoot)/extraxcel
 
     Windows:
 
