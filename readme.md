@@ -38,25 +38,24 @@ Microsoft Officeも不要です。
 
 1. 任意のディレクトリにおいて、composerを実行します。
 
-    > php composer.phar create-project grassfield/extraxcel .
+    > php composer.phar create-project grassfield/extraxcel extraxcel
 
-2. デフォルトのログ出力先に次のディレクトリとそれ以下の全てのファイルに、Apacheが書き込みできるパーミッションを設定してください。(この手順はWindowsサーバーでは不要です)
+2. publicディレクトリをお使いのウェブサーバのドキュメントルート配下にシンボリックリンクとして設置します。
+    Linux:
+
+    > ln -s ./extraxcel/public (DocumentRoot)
+
+    Windows:
+
+    > mklink /D (DocumentRoot) ./extraxcel/public
+
+3. デフォルトのログ出力先とそれ以下の全てのファイルに、Apacheが書き込みできるパーミッションを設定してください。(この手順はWindowsサーバーでは不要です)
 
     > chmod -R go+rw ./extraxcel
 
 
 
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
 ### License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+Extraxcel is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
