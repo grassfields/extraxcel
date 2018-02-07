@@ -128,7 +128,7 @@ class PHPExcelWriter {
             $col = count($this->_fileinfo_names);
             foreach($arrNames as $name) {
                 if (!isset($arrData[$name])) {
-                    $this->writeCell($objSheet, $row, $col++, '', 't'] );
+                    $this->writeCell($objSheet, $row, $col++, '', 't');
                     continue;
                 }
                 $field = $arrData[$name];
