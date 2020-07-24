@@ -9,7 +9,7 @@ foreach($header as $name) {
         $str.= "<td></td>\n";
         continue;
     }
-    $val = $data[$name]['data']['v'];
+    $val = $data[$name]['data']->formatted_value;
     $str.= "<td>".e($val)."</td>\n";
 }
 $str.= "</tr>\n";

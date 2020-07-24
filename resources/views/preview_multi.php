@@ -9,7 +9,7 @@ if (!isset($data[$name])) {
     $str.= "<td>".e($no)."</td>\n";
     $str.= "<td></td>\n";
     $str.= "</tr>\n";
-    
+
 } else if (    $data[$name]['rows']==1
             || $data[$name]['cols']==1 ) {
     //１レコード出力
@@ -17,10 +17,10 @@ if (!isset($data[$name])) {
     $str.= "<tr>\n";
     $str.= "<td>".e($no)."</td>\n";
     foreach($arrRow as $val) {
-        $str.= "<td>".e($val['v'])."</td>\n";
+        $str.= "<td>".e($val->formatted_value)."</td>\n";
     }
     $str.= "</tr>\n";
-    
+
 } else  {
     //複数レコード出力
     $arrVal = $data[$name]['data'];
@@ -28,11 +28,11 @@ if (!isset($data[$name])) {
         $str.= "<tr>\n";
         $str.= "<td>".e($no)."</td>\n";
         foreach($arrRow as $val) {
-            $str.= "<td>".e($val['v'])."</td>\n";
+            $str.= "<td>".e($val->formatted_value)."</td>\n";
         }
         $str.= "</tr>\n";
     }
-    
+
 }
 $str.= "</tbody>\n";
 echo $str;

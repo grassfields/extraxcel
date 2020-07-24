@@ -5,78 +5,80 @@ namespace App\Http\Controllers;
 use Log;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Reader\AbstractExcelReader;
 
 class ExtraxcelController extends Controller
 {
-    
+
     /*************************************
     * 定数定義
     **************************************/
     const DOWNLOAD_FILENAME = "extraxcel";
-    
+
     /**
      * Excelファイルのアップロード
      */
     public function postFile(Request $request)
     {
-        
+
         $this->validate($request, [
             'st'     => 'in:s,m',
             'idx'    => 'integer',
             'upfile' => 'required',
         ]);
-        
+
         $objDataSet = app('Dataset');
+        /** @var \App\Reader\AbstractExcelReader $objFile */
         $objFile = app('Reader', [ 'objFile' => $request->file('upfile') ]);
         $arrLoaded = $objDataSet->load($objFile);
-        
+
         //セッションに保存
         session(['Dataset' => $objDataSet]);
-        
+
         return response()->json($arrLoaded);
-        
+
     }
-    
-    
+
+
     /**
      * Excelファイルの抹消
      */
     public function removeFile(Request $request)
     {
-        
+
         $this->validate($request, [
             'idx' => 'required|integer',
         ]);
         $objDataSet = app('Dataset');
-        
+
         //データ抹消
         $rtn = $objDataSet->removeFile($request->get('idx'));
-        
+
         //セッションに保存
         session(['Dataset' => $objDataSet]);
-        
+
         return response()->json($rtn);
     }
-    
-    
-    
+
+
+
     /**
      * データをExcelファイルでダウンロード
      */
     public function download()
     {
         $objDataSet = app('Dataset');
-        $objWriter  = app('Writer', [ $objDataSet ]);
+        $objWriter  = app('Writer', [ 'dataset' => $objDataSet ]);
         $filepath   = $objWriter->save();
-        
+
         //出力ファイル配列にパスを追加
         Log::info('dataset-tempfile create [PATH='.$filepath.']');
         session()->put('outputfiles', $filepath);
-        
+
         $responseFileName = self::DOWNLOAD_FILENAME."_".date("YmdHi").".xlsx";
         return response()->download($filepath, $responseFileName);
     }
-    
+
     /**
      * スキーマ情報のエクスポート
      */
@@ -84,16 +86,16 @@ class ExtraxcelController extends Controller
     {
         $objDataSet = app('Dataset');
         $filepath   = $objDataSet->schemata->save();
-        
+
         //出力ファイル配列にパスを追加
         Log::info('schema-tempfile create [PATH='.$filepath.']');
         session()->put('outputfiles', $filepath);
-        
+
         $responseFileName = self::DOWNLOAD_FILENAME."-schema_".date("YmdHi").".json";
         return response()->download($filepath, $responseFileName);
     }
-    
-    
+
+
     /**
      * スキーマ情報の並び順を更新
      */
@@ -103,7 +105,7 @@ class ExtraxcelController extends Controller
             'single_odr' => 'array',
             'multi_odr' =>  'array',
         ]);
-        
+
         $objDataSet = app('Dataset');
         if ($request->has('single_odr')) {
             $objDataSet->schemata->resetOrder_single($request->get('single_odr'));
@@ -111,29 +113,29 @@ class ExtraxcelController extends Controller
         if ($request->has('multi_odr')) {
             $objDataSet->schemata->resetOrder_multi($request->get('multi_odr'));
         }
-        
+
         //セッションに保存
         session(['Dataset' => $objDataSet]);
         return response()->json(true);
     }
-    
-    
+
+
     /**
      * データ取得方法を変更
      */
     public function changeReadBy(Request $request)
     {
         $objDataSet = app('Dataset');
-        
+
         //変更
         $objDataSet->schemata->changeReadBy();
-        
+
         //セッションに保存
         session(['Dataset' => $objDataSet]);
         return response()->json(true);
     }
-    
-    
+
+
     /**
      * スキーマ情報のエクスポート
      */
@@ -142,20 +144,20 @@ class ExtraxcelController extends Controller
         $this->validate($request, [
             'upschema' => 'required',
         ]);
-        
+
         $objFile = $request->file('upschema');
         $objDataSet = app('Dataset');
-        
+
         $str = $objFile->getRealPath();
         $strData = file_get_contents($objFile->getPathname());
         $rtn = $objDataSet->schemata->load($strData);
-        
+
         //セッションに保存
         session(['Dataset' => $objDataSet]);
         return response()->json($rtn);
     }
-    
-    
+
+
     /**
      * データをExcelファイルでダウンロード
      */
@@ -165,29 +167,29 @@ class ExtraxcelController extends Controller
             'st'  => 'in:s,m',
             'idx' => 'integer',
         ]);
-        
+
         $dataset = app('Dataset');
         $view = view('main')->with('objDataset', $dataset)
                             ->with('sheettype',  $request->get('st', 's'))
                             ->with('sheetidx',   $request->get('idx', 0));
         return $view;
     }
-    
-    
-    
+
+
+
     /**
      * データをクリアする
      */
     public function clear(Request $request)
     {
-        
+
         $dataset = app('Dataset');
         $dataset->initialize();
         session()->flush();
         session()->regenerate();  //セッション再生成
         return redirect('/');
     }
-    
+
     /**
      * データをダンプする
      */
@@ -196,7 +198,7 @@ class ExtraxcelController extends Controller
         $dataset = app('Dataset');
         dd($dataset);
     }
-    
-    
-    
+
+
+
 }

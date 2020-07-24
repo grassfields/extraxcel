@@ -2,13 +2,13 @@
 
 namespace App\Schema;
 
-use PHPExcel_NamedRange;
-use PHPExcel_Cell;
-use PHPExcel_Exception;
+use PhpOffice\PhpSpreadsheet\NamedRange;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Exception;
 
 class Schema
 {
-    
+
     /**
     *  定数定義
     */
@@ -21,12 +21,8 @@ class Schema
     const TYPE_NON         = "non";       //非対応
     const ADD_OK           = "ok";        //セル範囲可変
     const ADD_NG           = "ng";        //セル範囲固定
-    const REQUIRE_ALL      = "all";       //全て必須
-    const REQUIRE_NOTALL   = "notall";    //一つ以上の入力必須
-    const REQUIRE_NON      = "non";       //任意（空を許可）
-    const REQUIRE_IGNORE   = "ignore";    //処理対象外
     const SCOPE_WORKBOOK   = -1;
-    
+
     /**
     *  変数定義
     */
@@ -38,16 +34,15 @@ class Schema
     public $rows;
     public $cols;
     public $allowadd;
-    public $require;
-    
-    
+
+
     /**
     *  コンストラクタ
     */
     public function __construct() {
         $this->initialize();
     }
-    
+
     /**
     *  項目初期化
     */
@@ -60,33 +55,32 @@ class Schema
         $this->rows     = 0;
         $this->cols     = 0;
         $this->allowadd = self::ADD_NG;
-        $this->require  = self::REQUIRE_NON;
     }
-    
+
     /**
      *  新規作成(ExcelのNamedRange配列から)
      */
-    public function setNamedRange(PHPExcel_NamedRange $objNR, $scope ) {
-        
+    public function setNamedRange(NamedRange $objNR, $scope ) {
+
         $this->initialize();
-        
+
         $name = $objNR->getName();
         $rng  = $objNR->getRange();
         $sht  = $objNR->getWorksheet()->getTitle();
         try {
-            $arrDim = PHPExcel_Cell::rangeDimension($rng);
+            $arrDim = Coordinate::rangeDimension($rng);
             if (($arrDim[0]==1) && ($arrDim[1]==1)) { $type = self::TYPE_CELL; }
                            else if ($arrDim[0]==1)  { $type = self::TYPE_COLUMN; }
                            else if ($arrDim[1]==1)  { $type = self::TYPE_ROW; }
                            else                     { $type = self::TYPE_TABLE; }
-        } catch(PHPExcel_Exception $e) {
+        } catch(Exception $e) {
             $type = self::TYPE_NON; //対象外
         }
         if ($scope != self::SCOPE_WORKBOOK) {
             //スコープ範囲が「ブック」以外は非対応
             $type = self::TYPE_NON; //対象外
         }
-        
+
         $this->name     = $name;
         $this->xlrange  = $rng;
         $this->xlscope  = $scope;
@@ -95,15 +89,14 @@ class Schema
         $this->rows     = $arrDim[1];
         $this->cols     = $arrDim[0];
         $this->allowadd = self::ADD_NG;
-        $this->require  = self::REQUIRE_NON;
-        
+
     }
-    
+
     /**
      *  スキーマセット
      */
     public function set( $obj ) {
-        
+
         $this->name     = $obj->name;
         $this->xlrange  = $obj->xlrange;
         $this->xlscope  = $obj->xlscope;
@@ -112,11 +105,10 @@ class Schema
         $this->rows     = $obj->rows;
         $this->cols     = $obj->cols;
         $this->allowadd = $obj->allowadd;
-        $this->require  = $obj->require;
-        
+
         return;
     }
-    
+
     /**
      *  スキーマ情報オブジェクトを取得する。
      */
@@ -130,15 +122,14 @@ class Schema
         $obj->rows      = $this->rows;
         $obj->cols      = $this->cols;
         $obj->allowadd  = $this->allowadd;
-        $obj->require   = $this->require;
         return $obj;
     }
-    
+
     /**
      *  スキーマ情報配列（名称付き）を取得する。
      */
     public function getInfo() {
-        
+
         $arrData = array(
                 "name"        => $this->name,
                 "xlrange"     => $this->xlrange,
@@ -150,11 +141,9 @@ class Schema
                 "cols"        => $this->cols,
                 "allowadd"    => $this->allowadd,
                 "allowadd_nm" => "",
-                "require"     => $this->require,
-                "require_nm"  => "",
                 "msg"         => ""
             );
-        
+
         //形式
         switch($this->type) {
             case self::TYPE_TABLE:      $val = "表形式";        break;
@@ -166,10 +155,7 @@ class Schema
             case self::TYPE_NON:
             default:
                 $val = "非対応";
-                if (    ($this->name == ExpoDataSheet::SHEETNAME_CELL)
-                     || ($this->name == ExpoDataSheet::SHEETNAME_ERR)) {
-                    $arrData["msg"] = "「".$this->name."」はシステムで予約された用語のため、フォームの項目としては使用できません）";
-                } else if ($this->xlscope != self::SCOPE_WORKBOOK) {
+                if ($this->xlscope != self::SCOPE_WORKBOOK) {
                     $arrData["msg"] = "「".$this->name."」は範囲が[Book]ではないため、フォームの項目としては使用できません）";
                 } else {
                     $arrData["msg"] = "セル参照範囲「".$this->xlrange."」は非対応です。";
@@ -177,7 +163,7 @@ class Schema
                 break;
         }
         $arrData["type_nm"] = $val;
-        
+
         //セル範囲拡張の許可
         switch($this->allowadd) {
             case self::ADD_OK:  $val = "拡張可";    break;
@@ -185,53 +171,30 @@ class Schema
             default:            $val = "範囲固定";  break;
         }
         $arrData["allowadd_nm"] = $val;
-        
-        //必須
-        switch($this->require) {
-            case self::REQUIRE_ALL:     $val = "全て必須";          break;
-            case self::REQUIRE_NOTALL:  $val = "一つ以上の入力必須";break;
-            case self::REQUIRE_NON:     $val = "任意（空欄可）";    break;
-            case self::REQUIRE_IGNORE:
-            default:                    $val = "処理対象外";        break;
-        }
-        $arrData["require_nm"] = $val;
-        
+
         return $arrData;
     }
-    
+
     /**
      *  セル範囲情報がスキーマと一致するか検証する
      */
     public function validate($arrInfo) {
-        
+
         //戻り配列初期化
         $arrRtn = [ "valid" => false,
                     "cols"  => null,
                     "rows"  => null,
                     "msg"   => ""       ];
-        
-        // 無視（処理対象外）チェック/////////////////////
-        if ($this->require==self::REQUIRE_IGNORE) {
-            //正常
-            $arrRtn["valid"] = true;
-            return $arrRtn;
-        }
-        
+
         // セル範囲取得チェック ////////////////////////
         if (!is_array($arrInfo)) {
-            if ($this->require==self::REQUIRE_ALL ||
-                $this->require==self::REQUIRE_NOTALL) {
-                $arrRtn["msg"] = "入力必須のセル範囲が取得できません";
-                return $arrRtn;
-            } else {
-                //任意なのでvalid=OKでチェックを抜ける
-                $arrRtn["valid"] = true;
-                $arrRtn["rows"] = 0;
-                $arrRtn["cols"] = 0;
-                return $arrRtn;
-            }
+            //任意なのでvalid=OKでチェックを抜ける
+            $arrRtn["valid"] = true;
+            $arrRtn["rows"] = 0;
+            $arrRtn["cols"] = 0;
+            return $arrRtn;
         }
-        
+
         // セル範囲 対応チェック ////////////////////////
         // 行数や列数が無制限（マイナス値)は非対応
         if ( ($arrInfo["row_first"]<0) || ($arrInfo["row_last"]<0) ||
@@ -239,11 +202,11 @@ class Schema
             $arrRtn["msg"] = "処理できないセル範囲です";
             return $arrRtn;
         }
-        
+
         //行数と列数を算出
         $arrRtn["rows"] = $arrInfo["row_last"] - $arrInfo["row_first"] + 1;
         $arrRtn["cols"] = $arrInfo["col_last"] - $arrInfo["col_first"] + 1;
-        
+
         //セル範囲変更チェック/////////////////////
         if ($this->allowadd==self::ADD_OK) {
             if ($this->type==self::TYPE_ROW && $arrRtn["rows"] > 1) {
@@ -263,7 +226,7 @@ class Schema
                 return $arrRtn;
             }
         }
-        
+
         //正常
         $arrRtn["valid"] = true;
         return $arrRtn;

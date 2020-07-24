@@ -2,13 +2,75 @@
 
 namespace App\Providers;
 
-use App\Dataset;
-use App\Writer\LibXLWriter;
-use App\Writer\PHPExcelWriter;
 use Illuminate\Support\ServiceProvider;
+use App\Dataset;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | サービスコンテナ
+        |--------------------------------------------------------------------------
+        |
+        */
+        //////////////////////////////
+        // Dataset
+        $this->app->singleton('Dataset', function($app) {
+            if (session()->has('Dataset')) {
+                return session('Dataset');
+            } else {
+                return new Dataset();
+            }
+        });
+        //////////////////////////////
+        // Reader
+        $this->app->bind('Reader', function($app, $param) {
+            switch(strtolower(config('extraxcel.excel_lib'))){
+                case 'phpspreadsheet':  $obj=app('App\Reader\PhpSpreadsheetReader', $param); break;
+                /*
+                case 'phpexcel':        $obj=app('App\Reader\PHPExcelReader', $param); break;
+                case 'libxl':           $obj=app('App\Reader\LibXLReader',    $param); break;
+                */
+                case 'auto':
+                default:
+                    $obj= app('App\Reader\PhpSpreadsheetReader', $param);
+                    /*
+                    $obj= (extension_loaded('excel')) ? app('App\Reader\LibXLReader',    $param)
+                                                      : app('App\Reader\PHPExcelReader', $param);
+                    */
+                    break;
+            }
+            return $obj;
+        });
+        //////////////////////////////
+        // Writer
+        $this->app->bind('Writer', function($app, $param) {
+            switch(strtolower(config('extraxcel.excel_lib'))){
+                case 'phpspreadsheet':  $obj=app('App\Writer\PhpSpreadsheetWriter', $param); break;
+                /*
+                case 'phpexcel':        $obj=app('App\Writer\PHPExcelWriter', $param); break;
+                case 'libxl':           $obj=app('App\Writer\LibXLWriter',    $param); break;
+                */
+                case 'auto':
+                default:
+                    $obj=app('App\Writer\PhpSpreadsheetWriter', $param);
+                    /*
+                    $obj= (extension_loaded('excel')) ? app('App\Writer\LibXLWriter',    $param)
+                                                      : app('App\Writer\PHPExcelWriter', $param);
+                    */
+                    break;
+            }
+            return $obj;
+        });
+    }
+
     /**
      * Bootstrap any application services.
      *
@@ -16,7 +78,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
         /*
         |--------------------------------------------------------------------------
         | 公開設定
@@ -47,58 +108,5 @@ class AppServiceProvider extends ServiceProvider
                 __DIR__.'/../../vendor/blueimp/jquery-file-upload/js/jquery.fileupload.js'
                             => public_path('packages/blueimp/jquery-file-upload/js/jquery.fileupload.js'),
             ]);
-        
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | サービスコンテナ
-        |--------------------------------------------------------------------------
-        |
-        */
-        //////////////////////////////
-        // Dataset
-        $this->app->singleton('Dataset', function($app) {
-            if (session()->has('Dataset')) {
-                return session('Dataset');
-            } else {
-                return new Dataset();
-            }
-        });
-        //////////////////////////////
-        // Reader
-        $this->app->bind('Reader', function($app, $param) {
-            switch(strtolower(config('extraxcel.excel_lib'))){
-                case 'phpexcel': $obj=app('App\Reader\PHPExcelReader', $param); break;
-                case 'libxl':    $obj=app('App\Reader\LibXLReader',    $param); break;
-                case 'auto':
-                default:
-                    $obj= (extension_loaded('excel')) ? app('App\Reader\LibXLReader',    $param)
-                                                      : app('App\Reader\PHPExcelReader', $param);
-                    break;
-            }
-            return $obj;
-        });
-        //////////////////////////////
-        // Writer
-        $this->app->bind('Writer', function($app, $param) {
-            switch(strtolower(config('extraxcel.excel_lib'))){
-                case 'phpexcel': $obj=app('App\Writer\PHPExcelWriter', $param); break;
-                case 'libxl':    $obj=app('App\Writer\LibXLWriter',    $param); break;
-                case 'auto':
-                default:
-                    $obj= (extension_loaded('excel')) ? app('App\Writer\LibXLWriter',    $param)
-                                                      : app('App\Writer\PHPExcelWriter', $param);
-                    break;
-            }
-            return $obj;
-        });
     }
 }

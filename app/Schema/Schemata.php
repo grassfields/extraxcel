@@ -3,59 +3,59 @@
 namespace App\Schema;
 
 use App\Schema\Schema;
-use PHPExcel_NamedRange;
+use PhpOffice\PhpSpreadsheet\NamedRange;
 
 class Schemata
 {
-  
+
     /*************************************
     * 定数定義
     **************************************/
     const CELL_SINGLE = 'single';
     const CELL_MULTI  = 'multi';
-    
+
     /**
     *  変数定義
     */
     public  $locked;    //ロック（これ以上拡張しない）
     public  $read_by;   //データ取得方法（名前orセル範囲）
     public  $filepath;  //設定ファイル保存パス
-    
+
     private $_single;
     private $_single_odr;
     private $_multi;
     private $_multi_odr;
-    
+
     /**
     *  コンストラクタ
     */
     public function __construct() {
         $this->initialize();
     }
-    
+
     /**
     *  項目初期化
     */
     public function initialize() {
-        
+
         $this->locked   = false;
         $this->read_by  = 'name';
         $this->filepath = null;
-        
+
         $this->_single      = array();
         $this->_single_odr  = array();
         $this->_multi       = array();
         $this->_multi_odr   = array();
-        
+
     }
-    
+
     /**
      *  スキーマ情報の有無を返す（空ならTrue）
      */
     public function isEmpty() {
         return (empty($this->_single_odr) && empty($this->_multi_odr));
     }
-    
+
     /**
      *  データ取得方法を切り替える
      */
@@ -64,30 +64,30 @@ class Schemata
         $this->read_by = ($this->read_by == 'name') ? 'range' : 'name';
         return;
     }
-    
+
     /**
      *  スキーマ情報配列を追加する
      */
     public function addSchema($schema, $scope = null) {
-        
-        if ($schema instanceof PHPExcel_NamedRange) {
+
+        if ($schema instanceof NamedRange) {
             //PHPExcelのNamedRangeオブジェクト
             $name = $schema->getName();
             $objSchema = app('App\Schema\Schema');
             $objSchema->setNamedRange($schema, $scope );
-            
+
         } else if ($schema instanceof Schema) {
             //Schemaオブジェクト
             $name = $schema->name;
             $objSchema = $schema;
-            
+
         } else if (is_object($schema)) {
             //オブジェクト変数
             $name = $schema->name;
             $objSchema = app('App\Schema\Schema');
             $objSchema->set($schema);
         }
-        
+
         switch($objSchema->type) {
             case Schema::TYPE_TABLE:
             case Schema::TYPE_ROW:
@@ -98,7 +98,7 @@ class Schemata
                 $this->_multi[$name] = $objSchema;
                 $this->_multi_odr[]  = $name;
                 break;
-                
+
             case Schema::TYPE_CELL:
             case Schema::TYPE_PID:
             case Schema::TYPE_ACT:
@@ -109,10 +109,10 @@ class Schemata
                 $this->_single_odr[]  = $name;
                 break;
         }
-        
+
         return;
     }
-    
+
     /**
      *  スキーマ出力順序を更新する（単一セル）
      */
@@ -123,7 +123,7 @@ class Schemata
             $this->_single_odr[] = $name;
         }
     }
-    
+
     /**
      *  スキーマ出力順序を更新する（複数セル）
      */
@@ -134,14 +134,14 @@ class Schemata
             $this->_multi_odr[] = $name;
         }
     }
-    
+
     /**
      *  スキーマ情報配列を統合する
      */
     public function merge(Schemata $schemata) {
-        
+
         if ($this->locked) return;  //ロック済のため処理なし
-        
+
         //スキーマのマージ（単一セル）
         $names_single = $schemata->getSchemaNames(self::CELL_SINGLE);
         foreach($names_single as $name) {
@@ -149,7 +149,7 @@ class Schemata
                 $this->addSchema($schemata->getSchema($name, self::CELL_SINGLE));
             }
         }
-        
+
         //スキーマのマージ（単一セル）
         $names_multi = $schemata->getSchemaNames(self::CELL_MULTI);
         foreach($names_multi as $name) {
@@ -157,9 +157,9 @@ class Schemata
                 $this->addSchema($schemata->getSchema($name, self::CELL_MULTI));
             }
         }
-        
+
     }
-    
+
     /**
      *  スキーマ情報名称配列を取得する
      */
@@ -168,7 +168,7 @@ class Schemata
                                             : $this->_multi_odr;
         return $arr;
     }
-    
+
     /**
      *  スキーマ情報を取得する
      */
@@ -182,12 +182,12 @@ class Schemata
         }
         return $obj;
     }
-    
+
     /**
      *  スキーマ情報をファイルに保存する
      */
     public function save() {
-        
+
         $obj = new \stdClass();
         $obj->locked        = $this->locked;
         $obj->read_by       = $this->read_by;
@@ -195,40 +195,40 @@ class Schemata
         $obj->single_odr    = $this->_single_odr;
         $obj->multi         = $this->_multi;
         $obj->multi_odr     = $this->_multi_odr;
-        
+
         //ファイル保存
-        $filepath = tempnam(storage_path()."/cache", "datasheet_");
+        $filepath = tempnam(storage_path("datasheet_cache"), "schemata_");
         $contents = json_encode($obj, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         file_put_contents($filepath, $contents);
-        
+
         //正常終了
         $this->filepath = $filepath;
         return $this->filepath;
     }
-    
+
     /**
      *  スキーマ情報を読み込む
      */
     public function load($strSchema) {
-        
+
         $obj = json_decode($strSchema);
         if (!is_object($obj)) return false;
-        
+
         $this->locked       = $obj->locked;
         $this->read_by      = $obj->read_by;
-        
+
         foreach((array)$obj->single as $sch) {
             $this->addSchema($sch);
         }
         foreach((array)$obj->multi as $sch) {
             $this->addSchema($sch);
         }
-        
+
         $this->_single_odr  = $obj->single_odr;
         $this->_multi_odr   = $obj->multi_odr;
-        
+
         //正常終了
         return $this;
     }
-    
+
 }
