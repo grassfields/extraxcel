@@ -18,7 +18,7 @@
 		"components/jqueryui": "1.*",
 		"components/bootstrap": "3.*",
 		"blueimp/jquery-file-upload": "9.*",
-        "phpoffice/phpspreadsheet": "1.13"
+        "phpoffice/phpspreadsheet": "1.16.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.7",
